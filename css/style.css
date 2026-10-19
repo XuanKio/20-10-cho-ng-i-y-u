@@ -1665,8 +1665,8 @@ html, body {
 
 /* MODAL CHÚC MỪNG */
 .celebration-modal { position: fixed; inset: 0; z-index: 100; background: rgba(35, 2, 7, 0.86); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 16px; }
-.celebration-card { width: min(92vw, 380px); background: var(--bg-burgundy); border: 2px solid var(--cream-gold); border-radius: 22px; padding: 20px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.celeb-emoji { width: 70px; height: 70px; object-fit: contain; }
+.celebration-card { width: min(92vw, 380px); max-height: 92dvh; overflow-y: auto; background: var(--bg-burgundy); border: 2px solid var(--cream-gold); border-radius: 22px; padding: 20px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .celeb-message { font-size: 14px; line-height: 1.45; }
 .celeb-photo-pair { display: flex; gap: 10px; justify-content: center; width: 100%; }
-.celeb-photo-pair img { width: 46%; height: 120px; object-fit: cover; border-radius: 10px; border: 2.5px solid #fff; }
+/* Khung dọc 2:3 khớp tỉ lệ dải photobooth (1200x1800) nên không bị cắt mất phần dưới */
+.celeb-photo-pair img { width: calc(50% - 5px); aspect-ratio: 2 / 3; object-fit: cover; border-radius: 10px; border: 2.5px solid #fff; background: #fff; }
