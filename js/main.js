@@ -24,6 +24,13 @@ class RomanticAppController {
     this.bindStage3Events();
     this.bindStage4Events();
     this.bindStage5Events();
+
+    // Hỗ trợ tham số URL ?stage=5 để tiện test nhanh trên localhost
+    const urlParams = new URLSearchParams(window.location.search);
+    const jumpStage = parseInt(urlParams.get("stage"), 10);
+    if (jumpStage >= 1 && jumpStage <= 5) {
+      this.goToStage(jumpStage);
+    }
   }
 
   initModules() {
@@ -132,6 +139,29 @@ class RomanticAppController {
       "r3ResetBtn",
       () => this.onRoomPuzzleSolved(3)
     );
+
+    // 11. Chặng 5: Mini-game Đại Chiến Ẩm Thực (Lẩu, Nướng, Buffet) & Gửi Gmail
+    const celebrationModal = document.getElementById("finalCelebrationModal");
+    const finalToast = document.getElementById("finalToastText");
+
+    this.foodGame = new FoodDeciderGame({
+      config: this.config.stage5?.foodGame,
+      threeScene: this.threeScene,
+      onSuccess: ({ dish, note }) => {
+        if (finalToast) {
+          finalToast.innerHTML = `
+            <strong style="color: var(--locket-gold); font-size: 1.15em;">Bé nlinn đã chọn: ${dish.name} ${dish.icon}</strong><br />
+            <span style="font-size: 0.9em; color: #ffd8bf;">Nhà tài trợ: Xuân Cường ✨</span><br />
+            ${note ? `<em style="color: #fff; font-style: italic; display: block; margin: 6px 0;">“${note}”</em>` : ""}
+            <span style="font-size: 0.92em;">Kết quả đã gửi thẳng vào Gmail anh Xuân.<br />
+            Tối nay anh qua đón em bé nlinn đi ăn ngon và chụp photobooth nhé ♥</span>
+          `;
+        }
+        if (celebrationModal) {
+          celebrationModal.classList.remove("hidden");
+        }
+      }
+    });
   }
 
   ensurePyroBurnGame() {
@@ -494,14 +524,40 @@ class RomanticAppController {
 
     if (acceptBtn) {
       acceptBtn.addEventListener("click", () => {
-        if (this.threeScene) this.threeScene.burstHearts(50);
-        if (modal) modal.classList.remove("hidden");
+        if (this.threeScene) this.threeScene.burstHearts(40);
+        if (this.foodGame) {
+          this.foodGame.openModal();
+        } else if (modal) {
+          modal.classList.remove("hidden");
+        }
+      });
+    }
+
+    // Chạm vào thẻ Nhiệm Vụ 01 (Đi Ăn Ngon) cũng có thể mở trực tiếp mini-game chọn món
+    const foodTaskItem = document.querySelector(".date-itinerary-list .itinerary-item:first-child");
+    if (foodTaskItem) {
+      foodTaskItem.style.cursor = "pointer";
+      foodTaskItem.setAttribute("title", "Chạm vào đây để chọn món ăn tối nay nhé!");
+      foodTaskItem.addEventListener("click", () => {
+        if (this.foodGame) {
+          this.foodGame.openModal();
+        }
       });
     }
 
     if (closeBtn) {
       closeBtn.addEventListener("click", () => {
         if (modal) modal.classList.add("hidden");
+      });
+    }
+
+    const reopenBtn = document.getElementById("reopenFoodGameBtn");
+    if (reopenBtn) {
+      reopenBtn.addEventListener("click", () => {
+        if (modal) modal.classList.add("hidden");
+        if (this.foodGame) {
+          this.foodGame.openModal();
+        }
       });
     }
   }

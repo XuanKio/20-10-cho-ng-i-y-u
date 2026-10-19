@@ -281,6 +281,46 @@ Ich liebe dich über alles, Nhật Linh! ♥`,
     question: "Nhật Linh đã sẵn sàng nhận Ủy Thác đi chơi tối nay cùng anh chưa?",
     acceptBtn: "Nhật Linh chốt kèo luôn! ♥",
     declineBtn: "Hôm nay nlinn mệt cơ",
-    finalToast: "Ủy thác hoàn tất! Tối nay anh qua đón em bé Nhật Linh (nlinn) đi ăn ngon và chụp photobooth nhé ♥"
+    finalToast: "Ủy thác hoàn tất! Tối nay anh qua đón em bé Nhật Linh (nlinn) đi ăn ngon và chụp photobooth nhé ♥",
+
+    // Mini-game chọn món tối nay - Gọn gàng, đáng yêu
+    foodGame: {
+      title: "Tối nay ăn gì nè? 😋",
+      sponsor: "Nhà tài trợ: Xuân Cường ✨",
+      toEmail: "pt7955@gmail.com",
+      formSubmitUrl: "https://formsubmit.co/ajax/pt7955@gmail.com",
+      dishes: [
+        {
+          id: "hotpot",
+          name: "Lẩu",
+          icon: "🍲",
+          desc: "Xì xụp ấm bụng"
+        },
+        {
+          id: "bbq",
+          name: "Nướng",
+          icon: "🥩",
+          desc: "Thơm phức xèo xèo"
+        },
+        {
+          id: "buffet",
+          name: "Buffet",
+          icon: "🍣",
+          desc: "Ăn no căng bụng"
+        }
+      ],
+      trollBtnLabel: "Gì cũng được 🤷‍♀️",
+      trollAlerts: [
+        "Làm gì có món 'gì cũng được' đâu nlinn ơi 😂",
+        "Đừng có 'gì cũng được' nữa, chọn đi mà 🥺",
+        "Bắt bài rồi nha! Chọn Lẩu, Nướng hay Buffet nè! 💕"
+      ],
+      quickNotes: [
+        "Đón em sớm nha 🛵",
+        "Thêm ly trà sữa nữa 🧋",
+        "Hôm nay cấm chê em ăn nhiều 🥺"
+      ],
+      emailSubject: "💌 Bé nlinn đã chọn món tối nay nè anh Xuân!"
+    }
   }
 };

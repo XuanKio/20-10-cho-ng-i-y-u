@@ -1708,3 +1708,428 @@ html, body {
 .celeb-photo-pair { display: flex; gap: 10px; justify-content: center; width: 100%; }
 /* Khung dọc 2:3 khớp tỉ lệ dải photobooth (1200x1800) nên không bị cắt mất phần dưới */
 .celeb-photo-pair img { width: calc(50% - 5px); aspect-ratio: 2 / 3; object-fit: cover; border-radius: 10px; border: 2.5px solid #fff; background: #fff; }
+
+/* ==========================================================================
+   MINI-GAME CHỌN MÓN ĂN TỐI NAY (2-PHASE COMPACT & TỰ NHIÊN)
+   ========================================================================== */
+.food-game-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+.food-game-modal.hidden {
+  display: none !important;
+}
+
+.food-game-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 2, 7, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.food-game-dialog.compact-dialog {
+  position: relative;
+  z-index: 2;
+  width: min(92vw, 380px);
+  max-height: 90dvh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--paper-ivory);
+  color: var(--ink-brown);
+  border: 2px solid var(--cream-gold);
+  border-radius: 22px;
+  padding: 18px 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.food-game-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #d5c1a5;
+  background: #f0e4d2;
+  color: #7a5d46;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  z-index: 5;
+}
+
+.food-game-close-btn:active {
+  transform: scale(0.9);
+}
+
+/* Stepper / Phase Indicator */
+.food-step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 10px;
+}
+
+.step-dot {
+  font-size: 11px;
+  font-weight: 700;
+  color: #a08873;
+  transition: color 0.2s ease;
+}
+
+.step-dot.active {
+  color: var(--bg-burgundy);
+}
+
+.step-line {
+  flex: 0 0 32px;
+  height: 2px;
+  background: #d8c7b3;
+  border-radius: 999px;
+}
+
+/* Header */
+.compact-header {
+  text-align: center;
+}
+
+.compact-header .food-game-main-title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--bg-burgundy);
+  margin: 0;
+}
+
+.food-sponsor-badge {
+  font-size: 12px;
+  color: #7d5940;
+  margin-top: 3px;
+}
+
+.food-sponsor-badge strong {
+  color: var(--crimson-accent);
+}
+
+/* Panel chuyển Phase */
+.food-phase-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.food-phase-panel.hidden {
+  display: none !important;
+}
+
+/* Bong bóng thoại troll */
+.food-troll-bubble {
+  background: #ff4757;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  padding: 7px 12px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 6px 16px rgba(255, 71, 87, 0.35);
+  animation: pulseAlert 0.4s ease infinite alternate;
+}
+
+/* 3 Thẻ Món Ăn: Lẩu, Nướng, Buffet (Gọn, Dễ Chạm) */
+.food-dishes-grid.compact-cards-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.compact-dish-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fbf5ed;
+  border: 1.5px solid #dfcfb8;
+  border-radius: 14px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.compact-dish-card:hover {
+  transform: translateY(-2px);
+  border-color: #c79f67;
+}
+
+.compact-dish-card.selected {
+  background: #fff9f0;
+  border: 2px solid var(--bg-burgundy);
+  box-shadow: 0 4px 14px rgba(109, 8, 21, 0.18);
+  transform: scale(1.02);
+}
+
+.compact-dish-card.spinning-highlight {
+  border: 2px solid #ff9f43 !important;
+  background: #fff2e0 !important;
+  transform: scale(1.02);
+}
+
+.dish-emoji-bubble {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f2e4d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.dish-text-wrap {
+  flex: 1;
+  text-align: left;
+}
+
+.dish-title {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--bg-burgundy);
+  margin: 0;
+}
+
+.dish-desc {
+  font-size: 11.5px;
+  color: #7d5e46;
+  margin: 1px 0 0;
+}
+
+.dish-check-mark {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #00b894;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.compact-dish-card.selected .dish-check-mark {
+  display: flex;
+}
+
+/* Hàng nút Phase 1 */
+.food-phase1-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  position: relative;
+}
+
+.clean-pill-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid #d5c1a5;
+  background: #f7eee2;
+  color: #6e4f3a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clean-pill-btn:hover {
+  background: #ecdcc8;
+}
+
+.troll-runaway-btn {
+  transition: transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.food-next-btn {
+  width: 100%;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 10px 16px;
+  background: var(--bg-burgundy);
+  color: var(--cream-gold);
+  border-color: var(--bg-burgundy);
+  cursor: pointer;
+}
+
+.food-next-btn.disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Phase 2: Dặn dò */
+.food-chosen-pill {
+  display: inline-block;
+  margin: 6px auto 0;
+  background: #f4eadc;
+  border: 1px solid #dfcfb8;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  color: #6e4f3a;
+}
+
+.food-chosen-pill strong {
+  color: var(--bg-burgundy);
+}
+
+.compact-note {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  text-align: left;
+}
+
+.food-note-label {
+  font-size: 11.5px;
+  color: #6e4f3a;
+}
+
+.food-quick-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.compact-chip-btn {
+  border: 1px solid #d5c1a5;
+  background: #f7eee2;
+  color: #6e4f3a;
+  font-size: 10.5px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.compact-chip-btn:hover, .compact-chip-btn.active {
+  background: var(--bg-burgundy);
+  color: var(--cream-gold);
+  border-color: var(--bg-burgundy);
+}
+
+.food-note-input-field {
+  width: 100%;
+  border: 1.5px solid #d5c1a5;
+  background: #fff;
+  border-radius: 12px;
+  padding: 9px 12px;
+  font-size: 12px;
+  color: var(--ink-brown);
+  font-family: inherit;
+  outline: none;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.food-note-input-field:focus {
+  border-color: var(--bg-burgundy);
+  box-shadow: 0 0 0 2px rgba(109, 8, 21, 0.15);
+}
+
+.food-phase2-nav {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.food-phase2-nav .back-btn {
+  flex: 0 0 auto;
+}
+
+.food-phase2-nav .food-submit-btn {
+  flex: 1;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 10px 14px;
+  background: var(--bg-burgundy);
+  color: var(--cream-gold);
+  border-color: var(--bg-burgundy);
+}
+
+/* Toast */
+.food-toast {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 2, 7, 0.94);
+  color: var(--cream-gold);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  z-index: 20;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: fadeIn 0.25s ease;
+}
+
+/* Animation */
+.shake-container {
+  animation: shakeGrid 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shakeGrid {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+  40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
+@keyframes pulseAlert {
+  from { transform: scale(0.98); }
+  to { transform: scale(1.02); }
+}
+
+.spinner-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.celeb-actions-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+
+

@@ -605,6 +605,88 @@ Tiếp tục: Phá Phong Ấn Hỏa →
 
   </main>
 
+  <!-- MODAL MINI-GAME CHỌN MÓN ĂN: 2 PHASE RÕ RÀNG, TINH TẾ -->
+  <div id="foodGameModal" class="food-game-modal hidden" role="dialog" aria-modal="true" aria-labelledby="foodGameTitle">
+    <div class="food-game-backdrop"></div>
+    <div class="food-game-dialog compact-dialog">
+      <!-- Nút đóng nhỏ -->
+      <button id="foodGameCloseBtn" class="food-game-close-btn" aria-label="Đóng">✕</button>
+
+      <!-- Stepper / Phase Indicator -->
+      <div class="food-step-indicator">
+        <span class="step-dot active" id="stepDot1">1. Chọn món</span>
+        <span class="step-line"></span>
+        <span class="step-dot" id="stepDot2">2. Dặn dò</span>
+      </div>
+
+      <!-- ==============================================
+           PHASE 1: CHỌN MÓN (LẨU / NƯỚNG / BUFFET)
+           ============================================== -->
+      <div id="foodPhase1" class="food-phase-panel active">
+        <div class="food-game-header compact-header">
+          <h2 id="foodGameTitle" class="food-game-main-title">Tối nay ăn gì nè? 😋</h2>
+          <p class="food-sponsor-badge">Nhà tài trợ: <strong>Xuân Cường ✨</strong></p>
+        </div>
+
+        <!-- Bong bóng thoại troll khi bấm "Gì cũng được" -->
+        <div id="foodTrollBubble" class="food-troll-bubble hidden" aria-live="polite"></div>
+
+        <!-- 3 Thẻ Món Ăn: Lẩu, Nướng, Buffet -->
+        <div id="foodDishesGrid" class="food-dishes-grid compact-cards-row"></div>
+
+        <!-- Hàng nút troll & quay ngẫu nhiên -->
+        <div class="food-phase1-actions">
+          <button id="foodSpinBtn" class="clean-pill-btn spin-btn" type="button">
+            🎲 Quay ngẫu nhiên
+          </button>
+          <button id="foodTrollBtn" class="clean-pill-btn troll-runaway-btn" type="button">
+            Gì cũng được 🤷‍♀️
+          </button>
+        </div>
+
+        <button id="foodNextToP2Btn" class="canva-pill-btn food-next-btn disabled" type="button" disabled>
+          Tiếp tục: Dặn dò anh Xuân →
+        </button>
+      </div>
+
+      <!-- ==============================================
+           PHASE 2: DẶN DÒ & CHỐT ĐƠN GỬI GMAIL
+           ============================================== -->
+      <div id="foodPhase2" class="food-phase-panel hidden">
+        <div class="food-game-header compact-header">
+          <h2 class="food-game-main-title">Dặn dò anh người yêu 💌</h2>
+          <div class="food-chosen-pill" id="foodChosenPill">
+            Đã chọn: <strong id="foodChosenName">Lẩu 🍲</strong>
+          </div>
+        </div>
+
+        <div class="food-note-section compact-note">
+          <label class="food-note-label">Có muốn dặn thêm nhà tài trợ Xuân Cường không nè?</label>
+          <div id="foodQuickChips" class="food-quick-chips"></div>
+          <input
+            type="text"
+            id="foodNoteInput"
+            class="food-note-input-field"
+            placeholder="Nhập lời nhắn cho anh Xuân (nếu có)..."
+            maxlength="100"
+          />
+        </div>
+
+        <div class="food-phase2-nav">
+          <button id="foodBackToP1Btn" class="clean-pill-btn back-btn" type="button">
+            ← Chọn lại
+          </button>
+          <button id="foodSubmitBtn" class="canva-pill-btn glow-pulse food-submit-btn" type="button">
+            Gửi Cho Anh Xuân Nhé! 🚀
+          </button>
+        </div>
+      </div>
+
+      <!-- Toast thông báo -->
+      <div id="foodStatusToast" class="food-toast hidden" aria-live="polite"></div>
+    </div>
+  </div>
+
   <!-- MODAL PHÁO HOA TIM CHỐT KÈO THÀNH CÔNG -->
   <div id="finalCelebrationModal" class="celebration-modal hidden">
     <div class="celebration-card">
@@ -616,7 +698,10 @@ Tiếp tục: Phá Phong Ấn Hỏa →
         <img src="assets/images/photo_flight_booth.jpg" alt="" draggable="false" />
         <img src="assets/images/photo_helmet.jpg" alt="" draggable="false" />
       </div>
-      <button id="closeCelebrationBtn" class="canva-pill-btn">Xem lại thiệp kỷ niệm ↺</button>
+      <div class="celeb-actions-row">
+        <button id="reopenFoodGameBtn" class="secondary-pill-btn">Đổi món ăn khác 🍲</button>
+        <button id="closeCelebrationBtn" class="canva-pill-btn">Xem lại thiệp kỷ niệm ↺</button>
+      </div>
     </div>
   </div>
 
@@ -628,6 +713,7 @@ Tiếp tục: Phá Phong Ấn Hỏa →
   <script src="js/genshinPuzzles.js"></script>
   <script src="js/calendar.js"></script>
   <script src="js/waterfallCard.js"></script>
+  <script src="js/foodGame.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

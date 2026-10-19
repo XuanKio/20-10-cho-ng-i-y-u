@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3001;
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -22,7 +22,54 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
-  let reqPath = decodeURI(req.url.split('?')[0]);
+  // Bật CORS cho mọi request
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+
+  const urlPath = req.url.split('?')[0];
+
+  // API Endpoint ghi nhận kết quả chọn món ăn của bé nlinn khi test Localhost
+  if (req.method === 'POST' && urlPath === '/api/send-choice') {
+    let body = '';
+    req.on('data', chunk => { body += chunk.toString(); });
+    req.on('end', () => {
+      try {
+        const data = JSON.parse(body || '{}');
+        const now = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+
+        console.log('\n========================================================');
+        console.log('💌 [NHẬN THÔNG BÁO HẸN HÒ TỪ BÉ NLINN - THIỆP 20/10]');
+        console.log(`⏰ Thời gian: ${now}`);
+        console.log(`🍲 Món em đã chọn: ${data.dish || 'Chưa rõ'}`);
+        console.log(`✨ Nhà tài trợ: Xuân Cường`);
+        console.log(`💬 Lời nhắn tình cảm của nlinn: ${data.note || 'Tối nay qua đón em đi ăn ngon nhé anh iu ♥'}`);
+        console.log(`📧 Gửi tới Gmail: ${data.toEmail || 'pt7955@gmail.com'}`);
+        console.log('💕 Mau chuẩn bị xế xịn qua đón công chúa thôi nào anh Xuân ơi!');
+        console.log('========================================================\n');
+
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({
+          success: true,
+          message: 'Đã nhận thông báo của bé nlinn thành công!',
+          receivedAt: now,
+          data
+        }));
+      } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ success: false, error: 'Dữ liệu JSON không hợp lệ' }));
+      }
+    });
+    return;
+  }
+
+  let reqPath = decodeURI(urlPath);
   if (reqPath === '/') reqPath = '/index.html';
 
   const filePath = path.join(__dirname, reqPath);
