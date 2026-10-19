@@ -152,13 +152,43 @@ class RomanticAppController {
   }
 
   populateStaticContent() {
+    // Chặng 1: Dấu sáp & Subtitle tiếng Đức
+    const s1Sub = document.getElementById("s1GermanSub");
+    if (s1Sub && this.config.stage1?.germanSubtitle) {
+      s1Sub.textContent = this.config.stage1.germanSubtitle;
+    }
+
+    // Chặng 2: Tâm thư viết tay & Phong bì Air Mail
     const hwBody = document.getElementById("handwrittenLetterText");
     const hwSign = document.getElementById("handwrittenSignText");
-    if (hwBody) hwBody.textContent = this.config.stage2.handwrittenLetter;
-    if (hwSign) hwSign.textContent = this.config.stage2.handwrittenSign;
+    const airSecret = document.getElementById("airmailSecretText");
+    if (hwBody && this.config.stage2?.handwrittenLetter) {
+      hwBody.textContent = this.config.stage2.handwrittenLetter;
+    }
+    if (hwSign && this.config.stage2?.handwrittenSign) {
+      hwSign.textContent = this.config.stage2.handwrittenSign;
+    }
+    if (airSecret && this.config.stage2?.airmailSecret) {
+      airSecret.innerHTML = this.config.stage2.airmailSecret.replace(/\n/g, "<br />");
+    }
 
+    // Chặng 3: Câu hỏi troll mật khẩu
+    const quizQ = document.getElementById("trollQuizQuestion");
+    const quizCorrect = document.getElementById("trollCorrectBtn");
+    const quizWrong = document.getElementById("trollWrongBtn");
+    if (quizQ && this.config.stage3?.trollQuestion) {
+      quizQ.innerHTML = this.config.stage3.trollQuestion.replace(/\n/g, "<br />");
+    }
+    if (quizCorrect && this.config.stage3?.correctOption) {
+      quizCorrect.textContent = this.config.stage3.correctOption;
+    }
+    if (quizWrong && this.config.stage3?.trollOption) {
+      quizWrong.textContent = this.config.stage3.trollOption;
+    }
+
+    // Chặng 4: Lời yêu đa ngôn ngữ (Phòng 1) & Thư tay (Phòng 3)
     const quotesLayer = document.getElementById("multilingualLoveContainer");
-    if (quotesLayer && this.config.stage4.room1.quotes) {
+    if (quotesLayer && this.config.stage4?.room1?.quotes) {
       quotesLayer.innerHTML = "";
       this.config.stage4.room1.quotes.forEach((q) => {
         const span = document.createElement("span");
@@ -173,8 +203,31 @@ class RomanticAppController {
 
     const r3Body = document.getElementById("room3LetterBody");
     const r3Sign = document.getElementById("room3LetterSign");
-    if (r3Body) r3Body.textContent = this.config.stage4.room3.letterBody;
-    if (r3Sign) r3Sign.textContent = `${this.config.stage4.room3.letterSign} ♥`;
+    if (r3Body && this.config.stage4?.room3?.letterBody) {
+      r3Body.textContent = this.config.stage4.room3.letterBody;
+    }
+    if (r3Sign && this.config.stage4?.room3?.letterSign) {
+      r3Sign.textContent = `${this.config.stage4.room3.letterSign} ♥`;
+    }
+
+    // Chặng 5: Vé Ủy Thác Tối Nay & Thông điệp hoàn tất
+    const s5Header = document.getElementById("s5HeaderLabel");
+    const s5German = document.getElementById("s5GermanGreeting");
+    const s5Title = document.getElementById("s5Title");
+    const s5Sub = document.getElementById("s5Subtitle");
+    const s5Q = document.getElementById("s5Question");
+    const s5Accept = document.getElementById("acceptDateBtn");
+    const s5Decline = document.getElementById("declineDateBtn");
+    const s5Toast = document.getElementById("finalToastText");
+
+    if (s5Header && this.config.stage5?.headerLabel) s5Header.textContent = this.config.stage5.headerLabel;
+    if (s5German && this.config.stage5?.germanGreeting) s5German.textContent = this.config.stage5.germanGreeting;
+    if (s5Title && this.config.stage5?.title) s5Title.textContent = this.config.stage5.title;
+    if (s5Sub && this.config.stage5?.subtitle) s5Sub.textContent = this.config.stage5.subtitle;
+    if (s5Q && this.config.stage5?.question) s5Q.textContent = this.config.stage5.question;
+    if (s5Accept && this.config.stage5?.acceptBtn) s5Accept.textContent = this.config.stage5.acceptBtn;
+    if (s5Decline && this.config.stage5?.declineBtn) s5Decline.textContent = this.config.stage5.declineBtn;
+    if (s5Toast && this.config.stage5?.finalToast) s5Toast.textContent = this.config.stage5.finalToast;
   }
 
   goToStage(stageNum) {

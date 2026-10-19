@@ -73,28 +73,28 @@ const APP_CONFIG = {
     burnPromptTitle: "Phong Ấn Nguyên Tố Hỏa",
     burnPromptSub: "Chạm và xoa ngón tay như ngọn lửa Pyro để đốt cháy lớp giấy niêm phong cổ...",
     germanTitle: "Für meine Liebste",
-    germanSubtitle: "Ich hab da was ganz Besonderes für dich...",
+    germanSubtitle: "Dành riêng cho em bé Nhật Linh (nlinn) của anh...",
     vietHint: "(Chạm vào dấu sáp hồng để mở niêm phong)",
     sealDodges: [
-      "Khoan đã! Hôm nay mới mở quà 20/10 sớm mà vội thế à?",
-      "Trượt rồi nhé lêu lêu! Chạm chuẩn vào dấu sáp lần nữa xem nào!"
+      "Khoan đã nlinn ơi! Hôm nay mới mở quà 20/10 sớm mà vội thế à?",
+      "Trượt rồi nhé em bé Linh! Chạm chuẩn vào dấu sáp lần nữa xem nào!"
     ],
     reactionPrompt: "Don’t open it yet.\nLet me see your reaction first!",
-    wrongReactionTitle: "Ơ kìa, sao lại làm mặt đấy?",
-    wrongReactionSub: "Nhận quà 20/10 sớm mà mặt căng thế! Phải chọn biểu cảm đáng yêu nhất mới kích hoạt Phản Ứng Nguyên Tố mở khóa nhé!",
+    wrongReactionTitle: "Ơ kìa nlinn, sao lại làm mặt đấy?",
+    wrongReactionSub: "Nhận quà 20/10 sớm mà mặt căng thế em bé! Phải chọn biểu cảm đáng yêu nhất mới kích hoạt Phản Ứng Nguyên Tố mở khóa nhé!",
     tryAgainBtn: "Thử lại ngay",
     unlockedTitle: "Open it and find out.\nIt's all for you!",
-    unlockedSub: "Alles Liebe zum Frauentag im Voraus ♥"
+    unlockedSub: "Alles Liebe zum Frauentag im Voraus für Nhật Linh ♥"
   },
 
   // 3. Chặng 2: Thiệp Handmade Vintage 3 khúc & Giải đố đuổi bắt Tiên Linh Trái Tim (Seelie Chase)
   stage2: {
-    puzzleHint: "Nhiệm vụ Tiên Linh (0/3): Hãy chạm vào Trái Tim Đỏ ngày 20/10 trên tờ lịch!",
+    puzzleHint: "Nhiệm vụ Tiên Linh (0/3): Hãy chạm vào Trái Tim Đỏ ngày 20/10 của Nhật Linh trên tờ lịch!",
     trollMessages: [
-      "Bước 1/3: Ủa hôm nay anh tặng quà sớm mà! Tiên Linh Trái Tim nhảy sang ngày 19 rồi kìa, bắt lấy nó!",
-      "Bước 2/3: Nó bay trốn vào chiếc phong bì London Air Mail bên dưới rồi, chạm vào phong bì đi!",
-      "Bước 3/3: Tiên Linh đã bay sang Cánh Phải (3. Locket)! Hãy lật xem ảnh Locket để đưa Tiên Linh về đích nhé!",
-      "Hoàn thành! Tiên Linh Trái Tim đã ghim cố định vào ngày 20/10 ♥ Đã mở khóa cổng Chặng 3!"
+      "Bước 1/3: Hôm nay anh tặng quà sớm cho nlinn mà! Tiên Linh Trái Tim nhảy sang ngày 19 rồi kìa, bắt lấy nó!",
+      "Bước 2/3: Nó bay trốn vào chiếc phong bì London Air Mail bên dưới rồi, chạm vào phong bì đi nlinn!",
+      "Bước 3/3: Tiên Linh đã bay sang Cánh Phải (Locket của đôi ta)! Hãy lật xem ảnh Locket để đưa Tiên Linh về đích nhé!",
+      "Hoàn thành! Tiên Linh Trái Tim đã trao trọn cho Nhật Linh ♥ Đã mở khóa cổng Chặng 3!"
     ],
     calendar: {
       monthName: "October",
@@ -102,11 +102,11 @@ const APP_CONFIG = {
       totalDays: 31,
       specialDay: 20
     },
-    airmailSecret: "Für meine süße Freundin ♥\nChúc cô gái của anh một mùa 20/10 sớm thật hạnh phúc!",
+    airmailSecret: "Für meine süße Nhật Linh ♥\nChúc em bé nlinn của anh một mùa 20/10 sớm ngập tràn niềm vui và luôn nở nụ cười rạng rỡ!",
     handwrittenLetter:
-`Alles Liebe zum Frauentag!
-Chúc em một mùa 20/10 sớm thật ý nghĩa và tràn đầy kỷ niệm vui. Mong rằng mỗi ngày trôi qua sẽ mang đến cho em thật nhiều sức khỏe, niềm vui và may mắn. Những điều em mong ước sẽ dần trở thành hiện thực và mỗi khoảnh khắc bên nhau đều là một ngày đáng nhớ. Hãy luôn mỉm cười rạng rỡ em nhé!`,
-    handwrittenSign: "Dein Xuân ♥",
+`Alles Liebe zum Frauentag, Nhật Linh của anh!
+Chúc em bé nlinn một mùa 20/10 sớm thật ý nghĩa và tràn đầy kỷ niệm vui. Mong rằng mỗi ngày trôi qua sẽ mang đến cho Linh thật nhiều sức khỏe, niềm vui và may mắn. Những điều nlinn mong ước sẽ dần trở thành hiện thực và mỗi khoảnh khắc bên nhau đều là một ngày đáng nhớ. Hãy luôn mỉm cười rạng rỡ em nhé!`,
+    handwrittenSign: "Dein Xuân yêu nlinn ♥",
 
     // Locket chia thành 2 đoạn: đoạn 1 xem ở thiệp (Chặng 2), đoạn 2 xem ở Ấn Ký 02 (Chặng 4)
     locketParts: [
@@ -132,7 +132,7 @@ Chúc em một mùa 20/10 sớm thật ý nghĩa và tràn đầy kỷ niệm vu
   // 4. Chặng 3: Giải đố Gỡ Rối Dây Tơ Hồng (Untangle Heart) + Thiệp Ren & Câu Hỏi Troll
   stage3: {
     untangleTitle: "Gỡ Rối Dây Tơ Hồng",
-    untangleSub: "Chạm và kéo các ngôi sao sao cho không còn sợi dây nào cắt chéo nhau để thắp sáng Chòm Sao Trái Tim!",
+    untangleSub: "Chạm và kéo các vì sao định mệnh của Xuân & Nhật Linh sao cho không còn sợi dây nào cắt chéo nhau để thắp sáng Chòm Sao Trái Tim!",
     untanglePuzzle: {
       width: 320,
       height: 250,
@@ -161,16 +161,16 @@ Chúc em một mùa 20/10 sớm thật ý nghĩa và tràn đầy kỷ niệm vu
     cardTitle: "Happy 20/10",
     cardDate: "20 . 10 . 2026",
     cardPhoto: "assets/images/photo_glasses_cute.jpg",
-    trollQuestion: "Câu hỏi bảo mật cuối để mở 3 Ấn Ký:\nAi là người chiều chuộng và thương em nhất?",
-    correctOption: "Chắc chắn là anh Xuân rồi ♥",
-    trollOption: "Hông biết đâu",
-    trollTransformedText: "Vẫn là anh Xuân chứ ai nữa! ♥"
+    trollQuestion: "Câu hỏi bảo mật cuối để mở 3 Ấn Ký:\nAi là người chiều chuộng và thương em bé Nhật Linh nhất trần đời?",
+    correctOption: "Chắc chắn là anh Xuân thương nlinn nhất rồi ♥",
+    trollOption: "Hông biết đâu nè",
+    trollTransformedText: "Vẫn là anh Xuân chứ ai vào đây nữa nlinn ơi! ♥"
   },
 
   // 5. Chặng 4: "Choose One" - Giải đố kích hoạt 3 Ấn Ký Trái Tim Ren (Canva Page 5, 6, 7, 8)
   stage4: {
     title: "Choose one",
-    subtitle: "Khám phá đủ 3 mảnh ghép ký ức để thắp sáng 3 Ấn Ký Nguyên Tố mở khóa lịch trình tối nay!",
+    subtitle: "Khám phá đủ 3 mảnh ghép ký ức của Xuân & Nhật Linh để thắp sáng 3 Ấn Ký Nguyên Tố mở khóa lịch trình tối nay!",
 
     // Phòng 1: Giải đố Thám Tử Murdle (Vòng tròn 5 bông hoa - Tìm 1 bông hoa nói dối) -> Mở Bó hoa hồng
     room1: {
@@ -243,8 +243,10 @@ Chúc em một mùa 20/10 sớm thật ý nghĩa và tràn đầy kỷ niệm vu
         { text: "Aishiteru", top: "2%", left: "42%", rot: 4 },
         { text: "Te amo", top: "5%", left: "72%", rot: 14 },
         { text: "Je t’aime", top: "22%", left: "3%", rot: -20 },
+        { text: "Yêu nlinn", top: "36%", left: "4%", rot: 8 },
         { text: "S’agapo", top: "20%", left: "76%", rot: 18 },
         { text: "Saranghae", top: "50%", left: "3%", rot: -14 },
+        { text: "Nhật Linh ♥", top: "37%", left: "74%", rot: -10 },
         { text: "Wo ai ni", top: "52%", left: "75%", rot: 14 },
         { text: "I love you", top: "80%", left: "6%", rot: 10 },
         { text: "Für immer", top: "80%", left: "68%", rot: -12 }
@@ -260,25 +262,25 @@ Chúc em một mùa 20/10 sớm thật ý nghĩa và tràn đầy kỷ niệm vu
     room3: {
       letterBody:
 `Für meine Liebste,
-Vậy là lại thêm một dịp đặc biệt nữa anh được ở bên cạnh em. Hôm nay anh làm chiếc web nhỏ này để chúc mừng 20/10 sớm cô gái của anh!
+Vậy là lại thêm một dịp đặc biệt nữa anh được ở bên cạnh em bé Nhật Linh. Hôm nay anh làm chiếc web nhỏ này để chúc mừng 20/10 sớm cô gái đáng yêu của anh!
 
-Cảm ơn em vì đã luôn ở bên anh, từ những lúc cùng nhau đi ăn, đi chụp photobooth nhắng nhít, những buổi ngồi net chơi game cùng nhau, cho đến những khoảnh khắc bình yên nhất. Không cần những lời hoa mỹ, chỉ cần em biết rằng với anh, em luôn là ngoại lệ đẹp đẽ nhất.
+Cảm ơn nlinn vì đã luôn ở bên anh, từ những lúc cùng nhau đi ăn, đi chụp photobooth nhắng nhít, những buổi ngồi net chơi game cùng nhau, cho đến những khoảnh khắc bình yên nhất. Không cần những lời hoa mỹ, chỉ cần Nhật Linh biết rằng với anh, em luôn là ngoại lệ đẹp đẽ và ấm áp nhất.
 
-Chúc em luôn rạng rỡ, hạnh phúc, bớt dỗi anh lại một xíu và cười thật tươi mỗi ngày nhé.
-Ich liebe dich über alles! ♥`,
-      letterSign: "Xuân"
+Chúc nlinn luôn rạng rỡ, hạnh phúc, bớt dỗi anh lại một xíu và cười thật tươi mỗi ngày nhé.
+Ich liebe dich über alles, Nhật Linh! ♥`,
+      letterSign: "Xuân thương nlinn"
     }
   },
 
   // 6. Chặng 5: Ủy Thác Đặc Biệt Tối Nay - Đi Ăn & Chụp Photobooth
   stage5: {
-    headerLabel: "DAILY COMMISSION • 20/10 EARLY PASS",
-    germanGreeting: "Ein kleiner Plan für heute Abend",
+    headerLabel: "✦ DAILY COMMISSION • DÀNH CHO NHẬT LINH ✦",
+    germanGreeting: "Ein kleiner Plan für nlinn heute Abend ♥",
     title: "Ủy Thác Tối Nay Của Đôi Ta",
-    subtitle: "Không cần nhìn đồng hồ, chỉ cần em lên đồ thật xinh!",
-    question: "Em đã sẵn sàng nhận Ủy Thác đi chơi tối nay cùng anh chưa?",
-    acceptBtn: "Chốt kèo luôn! ♥",
-    declineBtn: "Ở nhà ngủ cơ",
-    finalToast: "Ủy thác hoàn tất! Tối nay anh qua đón công chúa đi ăn ngon và chụp photobooth nhé ♥"
+    subtitle: "Không cần nhìn đồng hồ, chỉ cần em bé nlinn lên đồ thật xinh!",
+    question: "Nhật Linh đã sẵn sàng nhận Ủy Thác đi chơi tối nay cùng anh chưa?",
+    acceptBtn: "Nhật Linh chốt kèo luôn! ♥",
+    declineBtn: "Hôm nay nlinn mệt cơ",
+    finalToast: "Ủy thác hoàn tất! Tối nay anh qua đón em bé Nhật Linh (nlinn) đi ăn ngon và chụp photobooth nhé ♥"
   }
 };
