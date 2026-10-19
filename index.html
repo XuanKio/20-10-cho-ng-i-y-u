@@ -369,22 +369,39 @@
       </div>
 
       <!-- ===============================================================
-           PHÒNG 1: PUZZLE ĐÈN HOA SEN INAZUMA (LIGHTS OUT) -> BÓ HOA HỒNG
+           PHÒNG 1: THÁM TỬ MURDLE - VÒNG TRÒN 5 BÔNG HOA TÌM KẺ NÓI DỐI
            =============================================================== -->
       <div id="scrapbookRoom1" class="s4-room-modal">
         <!-- Màn Giải Đố Phòng 1 -->
         <div id="room1PuzzleView" class="room-puzzle-box">
           <div class="quest-focus-card">
-            <span class="quest-pill-badge">🧩 ẤN KÝ 01 • CƠ QUAN ĐÈN INAZUMA</span>
+            <span class="quest-pill-badge">🕵️ ẤN KÝ 01 • THÁM TỬ MURDLE: AI NÓI DỐI?</span>
             <p class="quest-main-text" id="r1PuzzleHint">
-              Quy tắc: Chạm vào 1 đèn sẽ <strong>đảo trạng thái (Bật/Tắt) của chính nó và 2 đèn sát cạnh</strong>. Hãy làm cả 5 đèn cùng sáng!
+              5 bông hoa ngồi thành <strong>vòng tròn</strong>. Chỉ có <strong>ĐÚNG 1 BÔNG HOA NÓI DỐI</strong> (giấu bó hoa 20/10), còn 4 bông kia nói thật 100%. Chạm từng hoa để đọc lời khai!
             </p>
           </div>
 
-          <div class="inazuma-lanterns-board" id="inazumaLanternsBoard"></div>
+          <!-- Bàn tròn 5 bông hoa nghi phạm (Xếp theo vòng tròn chuẩn) -->
+          <div class="murdle-circle-arena" id="murdleFlowerCircle"></div>
+
+          <!-- Hồ sơ lời khai của bông hoa đang chọn (Phong cách sổ tay thám tử Murdle) -->
+          <div class="murdle-dossier-card" id="murdleDossierBox">
+            <div class="murdle-dossier-header">
+              <strong id="murdleSuspectTitle">🌹 #1 Hồng Đỏ</strong>
+              <span id="murdleSuspectNeighbors" class="murdle-neighbor-tag">Kề #5 Oải Hương &amp; #2 Tulip</span>
+            </div>
+            <p class="murdle-statement-text" id="murdleSuspectStatement">
+              “Kẻ nói dối không phải là tôi, và cũng không ngồi ngay cạnh tôi trên vòng tròn!”
+            </p>
+            <div class="murdle-feedback-banner hidden" id="murdleFeedbackText"></div>
+            <div class="murdle-dossier-actions">
+              <button id="murdleMarkTruthBtn" class="secondary-pill-btn murdle-note-btn">📝 Đánh dấu: Nói thật</button>
+              <button id="murdleAccuseBtn" class="canva-pill-btn murdle-accuse-btn">🔍 Kết tội hoa này nói dối!</button>
+            </div>
+          </div>
 
           <div class="puzzle-controls-row">
-            <button id="r1ResetBtn" class="secondary-pill-btn">↺ Đặt lại đèn</button>
+            <button id="r1ResetBtn" class="secondary-pill-btn">↺ Xóa ghi chú</button>
             <button class="secondary-pill-btn back-to-hub-btn" data-close-room="1">← Quay lại</button>
           </div>
         </div>

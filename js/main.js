@@ -112,9 +112,10 @@ class RomanticAppController {
       }
     );
 
-    // 8. Chặng 4 - Puzzle Phòng 1: Cơ Quan 5 Đèn Hoa Sen Inazuma (Lights Out)
-    this.room1Puzzle = new InazumaLanternPuzzle(
-      "inazumaLanternsBoard",
+    // 8. Chặng 4 - Puzzle Phòng 1: Thám Tử Murdle - Vòng Tròn 5 Bông Hoa Tìm Kẻ Nói Dối
+    this.room1Puzzle = new MurdleFlowerCirclePuzzle(
+      "murdleFlowerCircle",
+      this.config.stage4.room1?.murdleCase,
       "r1ResetBtn",
       () => this.onRoomPuzzleSolved(1)
     );

@@ -1225,43 +1225,200 @@ html, body {
 }
 .lace-heart-item.visited .room-check-badge { display: flex; }
 
-/* PUZZLE 1: 5 ĐÈN HOA SEN INAZUMA */
-.inazuma-lanterns-board {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 7px;
-  width: 100%;
-  padding: 12px 6px;
-  background: rgba(28, 4, 10, 0.8);
-  border: 1.5px solid rgba(246, 195, 68, 0.4);
-  border-radius: 18px;
+/* PUZZLE 1: THÁM TỬ MURDLE - VÒNG TRÒN 5 BÔNG HOA TÌM KẺ NÓI DỐI */
+.murdle-circle-arena {
+  position: relative;
+  width: 246px;
+  height: 246px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(45, 7, 16, 0.9) 0%, rgba(20, 2, 7, 0.96) 100%);
+  border: 1.5px solid rgba(246, 195, 68, 0.45);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
 }
 
-.inazuma-lantern-btn {
+.murdle-ring-line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 76%;
+  height: 76%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1.5px dashed rgba(246, 195, 68, 0.45);
+  pointer-events: none;
+}
+
+.murdle-center-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(94, 8, 20, 0.92);
+  border: 1.5px solid var(--locket-gold);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
-  padding: 12px 4px;
-  border-radius: 14px;
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.6);
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.murdle-center-icon { font-size: 20px; line-height: 1; }
+.murdle-center-text { font-size: 9px; font-weight: 700; color: var(--locket-gold); }
+
+.murdle-flower-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(38, 6, 14, 0.94);
+  border: 1.5px solid rgba(240, 223, 190, 0.45);
+  color: var(--cream-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  padding: 2px;
 }
 
-.inazuma-lantern-btn.is-lit {
-  background: linear-gradient(145deg, rgba(246, 195, 68, 0.35), rgba(255, 107, 129, 0.35));
-  border-color: var(--locket-gold);
+.murdle-flower-node.is-selected {
+  transform: translate(-50%, -50%) scale(1.12);
+  border: 2px solid var(--locket-gold);
+  background: linear-gradient(145deg, rgba(135, 16, 34, 0.96), rgba(65, 6, 16, 0.96));
+  box-shadow: 0 0 16px rgba(246, 195, 68, 0.65);
+  z-index: 4;
+}
+
+.murdle-flower-node.is-marked-true {
+  border-color: #55efc4;
+}
+
+.murdle-flower-node.is-culprit {
+  border: 2.5px solid #ff4757;
+  box-shadow: 0 0 18px #ff4757;
+}
+
+.murdle-seat-pill {
+  font-size: 8.5px;
+  font-weight: 800;
+  color: var(--locket-gold);
+  line-height: 1;
+}
+
+.murdle-flower-emoji {
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+.murdle-flower-name {
+  font-size: 8.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.murdle-truth-tag {
+  position: absolute;
+  bottom: -6px;
+  background: #00b894;
   color: #fff;
-  box-shadow: 0 0 14px rgba(246, 195, 68, 0.55);
-  transform: translateY(-3px);
+  font-size: 7.5px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 999px;
 }
 
-.lantern-icon { font-size: 24px; }
-.lantern-num { font-size: 10.5px; font-weight: 700; }
-.lantern-state { font-size: 9.5px; font-weight: 800; color: var(--locket-gold); }
+.murdle-dossier-card {
+  width: 100%;
+  background: rgba(24, 3, 9, 0.88);
+  border: 1.5px solid rgba(246, 195, 68, 0.55);
+  border-radius: 16px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.42);
+}
+
+.murdle-dossier-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.murdle-dossier-header strong {
+  font-size: 13.5px;
+  color: var(--locket-gold);
+}
+
+.murdle-neighbor-tag {
+  font-size: 10px;
+  color: rgba(255, 240, 220, 0.78);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.murdle-statement-text {
+  font-size: 12.2px;
+  line-height: 1.4;
+  color: #fff;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 7px 9px;
+  border-radius: 10px;
+  border-left: 3px solid var(--locket-gold);
+}
+
+.murdle-feedback-banner {
+  font-size: 11.2px;
+  line-height: 1.35;
+  padding: 6px 9px;
+  border-radius: 9px;
+  font-weight: 600;
+}
+
+.murdle-feedback-banner.is-error {
+  background: rgba(255, 71, 87, 0.2);
+  border: 1px solid rgba(255, 71, 87, 0.65);
+  color: #ffd2d6;
+}
+
+.murdle-feedback-banner.is-success {
+  background: rgba(0, 184, 148, 0.24);
+  border: 1px solid #55efc4;
+  color: #d1fff0;
+}
+
+.murdle-dossier-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: space-between;
+}
+
+.murdle-note-btn {
+  flex: 1;
+  padding: 7px 8px;
+  font-size: 11px;
+}
+
+.murdle-accuse-btn {
+  flex: 1.25;
+  padding: 7px 10px;
+  font-size: 11.5px;
+}
 
 /* PUZZLE 2: VUỐT GHÉP TRANH KÝ ỨC 3x3 (CHUẨN TỈ LỆ VUÔNG 1:1) */
 .tile-puzzle-header {

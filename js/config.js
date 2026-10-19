@@ -144,8 +144,63 @@ Chúc em một mùa 20/10 sớm thật ý nghĩa và tràn đầy kỷ niệm vu
     title: "Choose one",
     subtitle: "Khám phá đủ 3 mảnh ghép ký ức để thắp sáng 3 Ấn Ký Nguyên Tố mở khóa lịch trình tối nay!",
 
-    // Phòng 1: Bó hoa hồng & Lời yêu đa ngôn ngữ (Canva Page 6)
+    // Phòng 1: Giải đố Thám Tử Murdle (Vòng tròn 5 bông hoa - Tìm 1 bông hoa nói dối) -> Mở Bó hoa hồng
     room1: {
+      murdleCase: {
+        ruleText: "5 bông hoa xếp thành vòng tròn. Chỉ có ĐÚNG 1 BÔNG HOA NÓI DỐI (đã giấu bó hoa 20/10), còn 4 bông kia đều nói thật 100%!",
+        suspects: [
+          {
+            id: 0,
+            seat: "#1",
+            icon: "🌹",
+            name: "Hồng Đỏ",
+            neighbors: "Kề #5 Oải Hương & #2 Tulip",
+            statement: "“Kẻ nói dối không phải là tôi, và cũng không ngồi ngay cạnh tôi trên vòng tròn!”",
+            isLiar: false,
+            wrongReason: "❌ Suy luận sai! Nếu #1 Hồng Đỏ nói dối thì cả #3 Hướng Dương và #4 Anh Đào đều phải nói thật — nhưng hai bông đó đang tố cáo trực tiếp nhau!"
+          },
+          {
+            id: 1,
+            seat: "#2",
+            icon: "🌷",
+            name: "Tulip Hồng",
+            neighbors: "Kề #1 Hồng Đỏ & #3 Hướng Dương",
+            statement: "“Đúng một trong hai bông hoa ngồi sát cạnh tôi (#1 Hồng Đỏ hoặc #3 Hướng Dương) đang nói dối!”",
+            isLiar: false,
+            wrongReason: "❌ Suy luận sai! Vì #3 Hướng Dương và #4 Anh Đào mâu thuẫn trực tiếp nhau nên kẻ nói dối phải thuộc 1 trong 2 bông đó, suy ra #2 Tulip đang nói thật!"
+          },
+          {
+            id: 2,
+            seat: "#3",
+            icon: "🌻",
+            name: "Hướng Dương",
+            neighbors: "Kề #2 Tulip & #4 Anh Đào",
+            statement: "“Chính bạn 🌸 Anh Đào (#4) ngồi ngay cạnh tôi mới là kẻ đang nói dối và giấu bó hoa!”",
+            isLiar: true,
+            solvedReason: "🎉 Phá án xuất sắc! #3 và #4 mâu thuẫn nhau nên #1, #2, #5 đều nói thật. Theo lời #1 và #2 thì #3 Hướng Dương chính là kẻ nói dối duy nhất!"
+          },
+          {
+            id: 3,
+            seat: "#4",
+            icon: "🌸",
+            name: "Anh Đào",
+            neighbors: "Kề #3 Hướng Dương & #5 Oải Hương",
+            statement: "“🌻 Hướng Dương (#3) đang vu khống tôi! Kẻ nói dối thật sự đang ngồi ngay cạnh 🌷 Tulip Hồng (#2) cơ!”",
+            isLiar: false,
+            wrongReason: "❌ Gần đúng rồi! Nếu #4 Anh Đào nói dối thì #2 Tulip Hồng phải nói thật. Nhưng #2 khai rằng kẻ nói dối ngồi cạnh #2 (#1 hoặc #3) chứ không phải #4!"
+          },
+          {
+            id: 4,
+            seat: "#5",
+            icon: "🪻",
+            name: "Oải Hương",
+            neighbors: "Kề #4 Anh Đào & #1 Hồng Đỏ",
+            statement: "“Tôi và 🌹 Hồng Đỏ (#1) ngồi cạnh tôi đều là những bông hoa trung thực 100%!”",
+            isLiar: false,
+            wrongReason: "❌ Suy luận sai! Giữa #3 Hướng Dương và #4 Anh Đào chắc chắn có 1 kẻ nói dối vì họ tố nhau, nên #5 Oải Hương không thể là kẻ nói dối!"
+          }
+        ]
+      },
       photos: [
         "assets/images/photo_heart_hands.jpg",
         "assets/images/photo_pinching_cheek.jpg",

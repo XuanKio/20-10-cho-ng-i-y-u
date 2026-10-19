@@ -556,67 +556,178 @@ class StarConstellationGame {
 }
 
 /* ============================================================================
-   4. ẤN KÝ 01: CƠ QUAN ĐÈN HOA SEN INAZUMA (5-NODE LIGHTS OUT PUZZLE)
-   Quy tắc: Bấm đèn i sẽ đảo trạng thái của (i-1, i, i+1). Làm cả 5 đèn cùng sáng!
+   4. ẤN KÝ 01: THÁM TỬ MURDLE - VÒNG TRÒN 5 BÔNG HOA TÌM KẺ NÓI DỐI
+   Lấy cảm hứng từ Murdle.com: 5 nghi phạm hoa xếp vòng tròn, 4 hoa nói thật,
+   duy nhất 1 hoa nói dối dựa trên mâu thuẫn lời khai và vị trí ngồi kề nhau.
    ============================================================================ */
-class InazumaLanternPuzzle {
-  constructor(boardId, resetBtnId, onSolved) {
-    this.board = document.getElementById(boardId);
+class MurdleFlowerCirclePuzzle {
+  constructor(circleId, murdleConfig, resetBtnId, onSolved) {
+    this.circleEl = document.getElementById(circleId);
+    this.config = murdleConfig || {};
+    this.suspects = this.config.suspects || [];
     this.resetBtn = document.getElementById(resetBtnId);
     this.onSolved = onSolved;
 
-    // Trạng thái khởi đầu: [0, 1, 1, 1, 0] -> Giải bằng cách bấm đèn số 3 (index 2), rồi đèn 2 (index 1), rồi đèn 5 (index 4)!
-    this.initialState = [0, 1, 1, 1, 0];
-    this.lights = [...this.initialState];
+    this.titleEl = document.getElementById("murdleSuspectTitle");
+    this.neighborsEl = document.getElementById("murdleSuspectNeighbors");
+    this.statementEl = document.getElementById("murdleSuspectStatement");
+    this.feedbackEl = document.getElementById("murdleFeedbackText");
+    this.markTruthBtn = document.getElementById("murdleMarkTruthBtn");
+    this.accuseBtn = document.getElementById("murdleAccuseBtn");
+
+    this.selectedIdx = 0;
+    this.truthMarks = new Set(); // Lưu các bông hoa người chơi tự ghi chú là "Nói thật"
     this.solved = false;
 
     this.init();
   }
 
   init() {
-    if (!this.board) return;
-    this.render();
+    if (!this.circleEl || this.suspects.length === 0) return;
+
+    if (this.markTruthBtn) {
+      this.markTruthBtn.addEventListener("click", () => {
+        if (this.solved) return;
+        if (this.truthMarks.has(this.selectedIdx)) {
+          this.truthMarks.delete(this.selectedIdx);
+        } else {
+          this.truthMarks.add(this.selectedIdx);
+        }
+        this.hideFeedback();
+        this.renderCircle();
+        this.updateDossier();
+      });
+    }
+
+    if (this.accuseBtn) {
+      this.accuseBtn.addEventListener("click", () => {
+        if (this.solved) return;
+        this.accuseCurrentSuspect();
+      });
+    }
+
     if (this.resetBtn) {
-      this.resetBtn.addEventListener("click", () => this.reset());
+      this.resetBtn.addEventListener("click", () => {
+        if (this.solved) return;
+        this.truthMarks.clear();
+        this.selectedIdx = 0;
+        this.hideFeedback();
+        this.renderCircle();
+        this.updateDossier();
+      });
+    }
+
+    this.renderCircle();
+    this.updateDossier();
+  }
+
+  hideFeedback() {
+    if (this.feedbackEl) {
+      this.feedbackEl.classList.add("hidden");
+      this.feedbackEl.classList.remove("is-error", "is-success");
     }
   }
 
-  reset() {
-    if (this.solved) return;
-    this.lights = [...this.initialState];
-    this.render();
-  }
+  accuseCurrentSuspect() {
+    const suspect = this.suspects[this.selectedIdx];
+    if (!suspect) return;
 
-  toggleAt(idx) {
-    if (this.solved) return;
-    [idx - 1, idx, idx + 1].forEach((n) => {
-      if (n >= 0 && n < this.lights.length) {
-        this.lights[n] = this.lights[n] === 1 ? 0 : 1;
-      }
-    });
-    this.render();
-
-    if (this.lights.every((v) => v === 1)) {
+    if (suspect.isLiar) {
       this.solved = true;
+      if (this.feedbackEl) {
+        this.feedbackEl.textContent = suspect.solvedReason;
+        this.feedbackEl.classList.remove("hidden", "is-error");
+        this.feedbackEl.classList.add("is-success");
+      }
+      this.renderCircle();
       setTimeout(() => {
         if (typeof this.onSolved === "function") this.onSolved();
-      }, 500);
+      }, 1100);
+    } else {
+      if (this.feedbackEl) {
+        this.feedbackEl.textContent = suspect.wrongReason;
+        this.feedbackEl.classList.remove("hidden", "is-success");
+        this.feedbackEl.classList.add("is-error");
+      }
+      const dossier = document.getElementById("murdleDossierBox");
+      if (dossier) {
+        dossier.classList.remove("shake-cell");
+        void dossier.offsetWidth;
+        dossier.classList.add("shake-cell");
+      }
     }
   }
 
-  render() {
-    this.board.innerHTML = "";
-    this.lights.forEach((isOn, idx) => {
-      const btn = document.createElement("button");
-      btn.className = `inazuma-lantern-btn ${isOn ? "is-lit" : "is-off"}`;
-      btn.innerHTML = `
-        <span class="lantern-icon">${isOn ? "🌸" : "🌑"}</span>
-        <span class="lantern-num">Đèn ${idx + 1}</span>
-        <span class="lantern-state">${isOn ? "SÁNG" : "TẮT"}</span>
+  renderCircle() {
+    this.circleEl.innerHTML = `
+      <div class="murdle-ring-line"></div>
+      <div class="murdle-center-badge">
+        <span class="murdle-center-icon">🕵️‍♀️</span>
+        <span class="murdle-center-text">4 Thật • 1 Dối</span>
+      </div>
+    `;
+
+    const total = this.suspects.length;
+    const radiusPct = 38.5;
+
+    this.suspects.forEach((s, idx) => {
+      // Xếp 5 bông hoa thành vòng tròn bắt đầu từ đỉnh 12 giờ (-90 độ)
+      const angleRad = ((-90 + idx * (360 / total)) * Math.PI) / 180;
+      const xPct = 50 + Math.cos(angleRad) * radiusPct;
+      const yPct = 50 + Math.sin(angleRad) * radiusPct;
+
+      const isSelected = idx === this.selectedIdx;
+      const isMarkedTrue = this.truthMarks.has(idx);
+      const isCulpritRevealed = this.solved && s.isLiar;
+
+      const node = document.createElement("button");
+      node.type = "button";
+      node.className = [
+        "murdle-flower-node",
+        isSelected ? "is-selected" : "",
+        isMarkedTrue ? "is-marked-true" : "",
+        isCulpritRevealed ? "is-culprit" : ""
+      ].join(" ").trim();
+
+      node.style.left = `${xPct}%`;
+      node.style.top = `${yPct}%`;
+
+      node.innerHTML = `
+        <span class="murdle-seat-pill">${s.seat}</span>
+        <span class="murdle-flower-emoji">${s.icon}</span>
+        <span class="murdle-flower-name">${s.name}</span>
+        ${isMarkedTrue ? '<span class="murdle-truth-tag">✓ Thật</span>' : ""}
       `;
-      btn.addEventListener("click", () => this.toggleAt(idx));
-      this.board.appendChild(btn);
+
+      node.addEventListener("click", () => {
+        if (this.solved) return;
+        this.selectedIdx = idx;
+        this.hideFeedback();
+        this.renderCircle();
+        this.updateDossier();
+      });
+
+      this.circleEl.appendChild(node);
     });
+  }
+
+  updateDossier() {
+    const s = this.suspects[this.selectedIdx];
+    if (!s) return;
+
+    if (this.titleEl) {
+      this.titleEl.textContent = `${s.icon} ${s.seat} • ${s.name}`;
+    }
+    if (this.neighborsEl) {
+      this.neighborsEl.textContent = s.neighbors;
+    }
+    if (this.statementEl) {
+      this.statementEl.textContent = s.statement;
+    }
+    if (this.markTruthBtn) {
+      const marked = this.truthMarks.has(this.selectedIdx);
+      this.markTruthBtn.textContent = marked ? "✓ Đã ghi: Nói thật (Bỏ)" : "📝 Đánh dấu: Nói thật";
+    }
   }
 }
 
