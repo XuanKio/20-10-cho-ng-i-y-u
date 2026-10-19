@@ -129,11 +129,35 @@ Chúc em một mùa 20/10 sớm thật ý nghĩa và tràn đầy kỷ niệm vu
     ]
   },
 
-  // 4. Chặng 3: Giải đố Nối Chòm Sao Định Mệnh (Genshin Constellation) + Thiệp Ren & Câu Hỏi Troll
+  // 4. Chặng 3: Giải đố Gỡ Rối Dây Tơ Hồng (Untangle Heart) + Thiệp Ren & Câu Hỏi Troll
   stage3: {
-    constellationTitle: "Giải Đố Chòm Sao Định Mệnh",
-    constellationSub: "Chạm lần lượt vào các ngôi sao phát sáng (1 → 6) để vẽ Chòm Sao Trái Tim mở khóa thiệp!",
-    trollStarMsg: "Ngôi sao này là 'Sao Hay Dỗi' đó lêu lêu! Hãy chạm vào ngôi sao đang nhấp nháy vàng cơ!",
+    untangleTitle: "Gỡ Rối Dây Tơ Hồng",
+    untangleSub: "Chạm và kéo các ngôi sao sao cho không còn sợi dây nào cắt chéo nhau để thắp sáng Chòm Sao Trái Tim!",
+    untanglePuzzle: {
+      width: 320,
+      height: 250,
+      edges: [
+        [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0],
+        [0, 3], [0, 2], [0, 4]
+      ],
+      goalNodes: [
+        { id: 0, x: 160, y: 78, label: "Tâm Giao" },
+        { id: 1, x: 100, y: 46, label: "Sao Mai" },
+        { id: 2, x: 50,  y: 118, label: "Duyên Nợ" },
+        { id: 3, x: 160, y: 220, label: "Chân Tình" },
+        { id: 4, x: 270, y: 118, label: "Nguyện Ước" },
+        { id: 5, x: 220, y: 46, label: "Tri Kỷ" }
+      ],
+      // Vị trí xáo trộn ban đầu (tạo đúng 4 nút thắt giao nhau):
+      scrambledNodes: [
+        { id: 0, x: 100, y: 46, label: "Tâm Giao" },
+        { id: 1, x: 160, y: 78, label: "Sao Mai" },
+        { id: 2, x: 50,  y: 118, label: "Duyên Nợ" },
+        { id: 3, x: 270, y: 118, label: "Chân Tình" },
+        { id: 4, x: 160, y: 220, label: "Nguyện Ước" },
+        { id: 5, x: 220, y: 46, label: "Tri Kỷ" }
+      ]
+    },
     cardTitle: "Happy 20/10",
     cardDate: "20 . 10 . 2026",
     cardPhoto: "assets/images/photo_glasses_cute.jpg",

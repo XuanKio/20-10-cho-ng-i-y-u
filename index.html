@@ -272,18 +272,25 @@ Tiếp tục: Phá Phong Ấn Hỏa →
          ================================================================= -->
     <section id="stage3" class="stage-screen">
 
-      <!-- Bước 3A: Minigame Nối Chòm Sao Định Mệnh (Genshin Impact Astrolabe) -->
+      <!-- Bước 3A: Minigame Gỡ Rối Dây Tơ Hồng (Untangle Heart Constellation) -->
       <div id="s3SubConstellation" class="s3-subscreen active">
         <div class="quest-focus-card">
-          <span class="quest-pill-badge">✦ GIẢI ĐỐ CHÒM SAO ĐỊNH MỆNH</span>
+          <span class="quest-pill-badge">✦ GỠ RỐI DÂY TƠ HỒNG</span>
           <h2 class="cooper-dialog-title">Chòm Sao Trái Tim</h2>
           <p id="constellationStatusText" class="quest-main-text">
-            Chạm lần lượt vào các ngôi sao phát sáng (1 → 6) để vẽ Chòm Sao mở khóa thiệp!
+            Chạm và kéo các ngôi sao sao cho <strong>không còn sợi dây nào cắt chéo nhau</strong> để thắp sáng thiệp!
           </p>
+          <div class="untangle-counter-pill">
+            Nút thắt còn lại: <strong id="untangleCrossingsCount">4</strong>
+          </div>
         </div>
 
         <div class="constellation-board-wrap">
           <canvas id="constellationCanvas"></canvas>
+        </div>
+
+        <div class="untangle-controls-row">
+          <button id="untangleResetBtn" class="secondary-pill-btn">↺ Xếp lại từ đầu</button>
         </div>
       </div>
 

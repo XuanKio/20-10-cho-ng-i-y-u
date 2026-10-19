@@ -398,162 +398,367 @@ class PyroBurnRevealGame {
 }
 
 /* ============================================================================
-   3. MINIGAME NỐI CHÒM SAO ĐỊNH MỆNH (GENSHIN CONSTELLATION HEART PUZZLE)
+   3. MINIGAME GỠ RỐI DÂY TƠ HỒNG (UNTANGLE HEART CONSTELLATION PUZZLE)
+   Áp dụng nguyên lý Đồ Thị Phẳng (Planar Graph):
+   - Các ngôi sao ban đầu bị đan chéo các sợi dây tơ hồng ánh sáng.
+   - Người chơi chạm và kéo thả các ngôi sao sao cho không còn sợi dây nào cắt nhau.
+   - Khi gỡ rối hoàn toàn (0 nút thắt), các sợi dây phát quang vàng rực rỡ và hội tụ thành Trái Tim tỏa sáng!
    ============================================================================ */
-class StarConstellationGame {
-  constructor(canvasId, statusId, onSolved) {
+class UntangleHeartGame {
+  constructor(canvasId, statusId, onSolved, resetBtnId = "untangleResetBtn") {
     this.canvas = document.getElementById(canvasId);
     this.statusEl = document.getElementById(statusId);
+    this.counterEl = document.getElementById("untangleCrossingsCount");
+    this.counterPill = document.querySelector(".untangle-counter-pill");
+    this.resetBtn = document.getElementById(resetBtnId);
     this.onSolved = onSolved;
 
     if (!this.canvas) return;
     this.ctx = this.canvas.getContext("2d");
     this.width = 320;
-    this.height = 240;
+    this.height = 250;
     this.canvas.width = this.width;
     this.canvas.height = this.height;
 
-    this.stars = [
-      { id: 1, x: 160, y: 68, label: "1" },
-      { id: 2, x: 222, y: 38, label: "2" },
-      { id: 3, x: 268, y: 98, label: "3" },
-      { id: 4, x: 160, y: 205, label: "4" },
-      { id: 5, x: 52,  y: 98, label: "5" },
-      { id: 6, x: 98,  y: 38, label: "6" }
+    const config = (typeof APP_CONFIG !== "undefined" && APP_CONFIG.stage3?.untanglePuzzle) || {};
+    this.edges = config.edges || [
+      [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0],
+      [0, 3], [0, 2], [0, 4]
+    ];
+    this.goalNodes = config.goalNodes || [
+      { id: 0, x: 160, y: 78, label: "Tâm Giao" },
+      { id: 1, x: 100, y: 46, label: "Sao Mai" },
+      { id: 2, x: 50,  y: 118, label: "Duyên Nợ" },
+      { id: 3, x: 160, y: 220, label: "Chân Tình" },
+      { id: 4, x: 270, y: 118, label: "Nguyện Ước" },
+      { id: 5, x: 220, y: 46, label: "Tri Kỷ" }
+    ];
+    this.initialNodes = config.scrambledNodes || [
+      { id: 0, x: 100, y: 46, label: "Tâm Giao" },
+      { id: 1, x: 160, y: 78, label: "Sao Mai" },
+      { id: 2, x: 50,  y: 118, label: "Duyên Nợ" },
+      { id: 3, x: 270, y: 118, label: "Chân Tình" },
+      { id: 4, x: 160, y: 220, label: "Nguyện Ước" },
+      { id: 5, x: 220, y: 46, label: "Tri Kỷ" }
     ];
 
-    this.trollStar = { x: 160, y: 128, label: "Sao Hay Dỗi" };
-    this.currentStep = 0;
+    this.nodes = this.initialNodes.map((n) => ({ ...n }));
+    this.draggedNodeIdx = -1;
+    this.dragOffset = { x: 0, y: 0 };
     this.solved = false;
     this.pulsePhase = 0;
+
+    // Các điểm sao nền lấp lánh ngẫu nhiên
+    this.bgStars = Array.from({ length: 26 }, () => ({
+      x: Math.random() * this.width,
+      y: Math.random() * this.height,
+      r: 0.6 + Math.random() * 1.2,
+      phase: Math.random() * Math.PI * 2
+    }));
+
+    this.crossings = this.findCrossings();
+    this.updateHUD();
 
     this.bindEvents();
     this.animate();
   }
 
+  // Thuật toán kiểm tra 2 đoạn thẳng có cắt nhau (Segment-Segment Intersection)
+  ccw(p1, p2, p3) {
+    return (p3.y - p1.y) * (p2.x - p1.x) > (p2.y - p1.y) * (p3.x - p1.x);
+  }
+
+  intersect(p1, p2, p3, p4) {
+    return (
+      this.ccw(p1, p3, p4) !== this.ccw(p2, p3, p4) &&
+      this.ccw(p1, p2, p3) !== this.ccw(p1, p2, p4)
+    );
+  }
+
+  computeIntersectionPoint(p1, p2, p3, p4) {
+    const d = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x);
+    if (Math.abs(d) < 1e-5) return null;
+    const px =
+      ((p1.x * p2.y - p1.y * p2.x) * (p3.x - p4.x) - (p1.x - p2.x) * (p3.x * p4.y - p3.y * p4.x)) / d;
+    const py =
+      ((p1.x * p2.y - p1.y * p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x * p4.y - p3.y * p4.x)) / d;
+    return { x: px, y: py };
+  }
+
+  findCrossings() {
+    const points = [];
+    const intersectingEdges = new Set();
+
+    for (let i = 0; i < this.edges.length; i++) {
+      for (let j = i + 1; j < this.edges.length; j++) {
+        const [u1, v1] = this.edges[i];
+        const [u2, v2] = this.edges[j];
+
+        // Hai cạnh có chung đỉnh thì không tính là cắt nhau
+        if (u1 === u2 || u1 === v2 || v1 === u2 || v1 === v2) continue;
+
+        const p1 = this.nodes[u1];
+        const p2 = this.nodes[v1];
+        const p3 = this.nodes[u2];
+        const p4 = this.nodes[v2];
+
+        if (this.intersect(p1, p2, p3, p4)) {
+          intersectingEdges.add(i);
+          intersectingEdges.add(j);
+          const pt = this.computeIntersectionPoint(p1, p2, p3, p4);
+          if (pt) points.push(pt);
+        }
+      }
+    }
+
+    return { count: points.length, intersectingEdges, points };
+  }
+
+  updateHUD() {
+    if (this.counterEl) {
+      this.counterEl.textContent = this.crossings.count;
+    }
+    if (this.counterPill) {
+      this.counterPill.classList.toggle("is-solved", this.crossings.count === 0);
+      if (this.crossings.count === 0) {
+        this.counterPill.textContent = "Hoàn hảo: 0 nút thắt! Đang thắp sáng thiệp...";
+      } else {
+        this.counterPill.innerHTML = `Nút thắt còn lại: <strong>${this.crossings.count}</strong>`;
+      }
+    }
+  }
+
+  reset() {
+    if (this.solved) return;
+    this.nodes = this.initialNodes.map((n) => ({ ...n }));
+    this.crossings = this.findCrossings();
+    this.updateHUD();
+  }
+
   bindEvents() {
-    const handleTap = (clientX, clientY) => {
-      if (this.solved) return;
+    const getPos = (e) => {
       const rect = this.canvas.getBoundingClientRect();
       const scaleX = this.width / rect.width;
       const scaleY = this.height / rect.height;
-      const x = (clientX - rect.left) * scaleX;
-      const y = (clientY - rect.top) * scaleY;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+      };
+    };
 
-      if (Math.hypot(x - this.trollStar.x, y - this.trollStar.y) < 26) {
-        if (this.statusEl) {
-          this.statusEl.textContent = APP_CONFIG.stage3.trollStarMsg;
+    const onStart = (pos) => {
+      if (this.solved) return;
+      // Tìm ngôi sao gần nhất trong bán kính chạm (32px để bấm trên điện thoại cực nhạy)
+      let nearestIdx = -1;
+      let minDist = 34;
+      this.nodes.forEach((node, idx) => {
+        const d = Math.hypot(pos.x - node.x, pos.y - node.y);
+        if (d < minDist) {
+          minDist = d;
+          nearestIdx = idx;
         }
-        return;
-      }
+      });
 
-      const targetStar = this.stars[this.currentStep];
-      if (targetStar && Math.hypot(x - targetStar.x, y - targetStar.y) < 34) {
-        this.currentStep++;
-        if (this.statusEl) {
-          this.statusEl.textContent = `Đã kết nối ${this.currentStep} / ${this.stars.length} ngôi sao Định Mệnh!`;
-        }
-
-        if (this.currentStep >= this.stars.length) {
-          this.solved = true;
-          if (this.statusEl) {
-            this.statusEl.textContent = "Chòm Sao Trái Tim đã tỏa sáng! Mở khóa Thiệp Kỷ Niệm!";
-          }
-          setTimeout(() => {
-            if (typeof this.onSolved === "function") {
-              this.onSolved();
-            }
-          }, 650);
-        }
+      if (nearestIdx !== -1) {
+        this.draggedNodeIdx = nearestIdx;
+        this.dragOffset.x = pos.x - this.nodes[nearestIdx].x;
+        this.dragOffset.y = pos.y - this.nodes[nearestIdx].y;
+        this.canvas.classList.add("is-dragging");
       }
     };
 
-    this.canvas.addEventListener("click", (e) => handleTap(e.clientX, e.clientY));
-    this.canvas.addEventListener("touchstart", (e) => {
-      if (e.touches.length > 0) handleTap(e.touches[0].clientX, e.touches[0].clientY);
-    }, { passive: true });
+    const onMove = (pos) => {
+      if (this.draggedNodeIdx === -1 || this.solved) return;
+      const node = this.nodes[this.draggedNodeIdx];
+      // Giới hạn trong khung canvas
+      const pad = 24;
+      node.x = Math.max(pad, Math.min(this.width - pad, pos.x - this.dragOffset.x));
+      node.y = Math.max(pad, Math.min(this.height - pad, pos.y - this.dragOffset.y));
+
+      this.crossings = this.findCrossings();
+      this.updateHUD();
+
+      // Kiểm tra chiến thắng khi không còn bất kỳ nút thắt nào
+      if (this.crossings.count === 0 && !this.solved) {
+        this.solved = true;
+        this.canvas.classList.remove("is-dragging");
+        this.updateHUD();
+        if (this.statusEl) {
+          this.statusEl.textContent = "Dây tơ hồng đã gỡ rối hoàn toàn! Chòm Sao Trái Tim tỏa sáng!";
+        }
+        setTimeout(() => {
+          if (typeof this.onSolved === "function") this.onSolved();
+        }, 900);
+      }
+    };
+
+    const onEnd = () => {
+      this.draggedNodeIdx = -1;
+      this.canvas.classList.remove("is-dragging");
+    };
+
+    // Chuột (Desktop)
+    this.canvas.addEventListener("mousedown", (e) => onStart(getPos(e)));
+    window.addEventListener("mousemove", (e) => onMove(getPos(e)));
+    window.addEventListener("mouseup", onEnd);
+
+    // Cảm ứng (Mobile iPhone)
+    this.canvas.addEventListener(
+      "touchstart",
+      (e) => {
+        if (e.touches.length > 0) onStart(getPos(e));
+      },
+      { passive: true }
+    );
+    this.canvas.addEventListener(
+      "touchmove",
+      (e) => {
+        if (e.cancelable && this.draggedNodeIdx !== -1) e.preventDefault();
+        if (e.touches.length > 0) onMove(getPos(e));
+      },
+      { passive: false }
+    );
+    this.canvas.addEventListener("touchend", onEnd);
+    this.canvas.addEventListener("touchcancel", onEnd);
+
+    if (this.resetBtn) {
+      this.resetBtn.addEventListener("click", () => this.reset());
+    }
   }
 
   animate() {
     requestAnimationFrame(() => this.animate());
-    this.pulsePhase += 0.07;
+    this.pulsePhase += 0.055;
 
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.width, this.height);
 
-    ctx.save();
-    ctx.strokeStyle = "rgba(239, 224, 193, 0.18)";
-    ctx.setLineDash([4, 4]);
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    this.stars.forEach((s, i) => {
-      if (i === 0) ctx.moveTo(s.x, s.y);
-      else ctx.lineTo(s.x, s.y);
-    });
-    ctx.closePath();
-    ctx.stroke();
-    ctx.restore();
-
-    if (this.currentStep > 1 || this.solved) {
-      ctx.save();
-      ctx.strokeStyle = "#ffe299";
-      ctx.shadowColor = "#ffbb33";
-      ctx.shadowBlur = 12;
-      ctx.lineWidth = 3;
+    // 1. Vẽ bầu trời sao nền lấp lánh
+    this.bgStars.forEach((st) => {
+      const alpha = 0.25 + 0.35 * Math.sin(this.pulsePhase + st.phase);
+      ctx.fillStyle = `rgba(240, 223, 190, ${alpha})`;
       ctx.beginPath();
-      for (let i = 0; i < this.currentStep; i++) {
-        const s = this.stars[i];
-        if (i === 0) ctx.moveTo(s.x, s.y);
-        else ctx.lineTo(s.x, s.y);
+      ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // 2. Vẽ các sợi dây tơ hồng nối giữa các ngôi sao
+    this.edges.forEach(([u, v], edgeIdx) => {
+      const p1 = this.nodes[u];
+      const p2 = this.nodes[v];
+      const isIntersecting = this.crossings.intersectingEdges.has(edgeIdx);
+
+      ctx.save();
+      if (this.solved) {
+        // Trạng thái chiến thắng: Dây phát quang vàng rực rỡ
+        ctx.strokeStyle = "rgba(255, 235, 140, 0.95)";
+        ctx.shadowColor = "#ffbb33";
+        ctx.shadowBlur = 14;
+        ctx.lineWidth = 2.8;
+      } else if (isIntersecting) {
+        // Dây đang bị rối: màu hồng đỏ với nhịp đập cảnh báo
+        const pulse = Math.sin(this.pulsePhase * 2) * 0.2;
+        ctx.strokeStyle = `rgba(255, 107, 129, ${0.75 + pulse})`;
+        ctx.shadowColor = "#ff4757";
+        ctx.shadowBlur = 8;
+        ctx.lineWidth = 2.2;
+      } else {
+        // Dây đã được giải phóng: màu vàng hổ phách êm dịu
+        ctx.strokeStyle = "rgba(246, 195, 68, 0.7)";
+        ctx.shadowColor = "rgba(246, 195, 68, 0.35)";
+        ctx.shadowBlur = 4;
+        ctx.lineWidth = 1.8;
       }
-      if (this.solved) ctx.closePath();
+
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
       ctx.stroke();
       ctx.restore();
+    });
+
+    // 3. Vẽ điểm nút thắt (giao điểm giữa các dây đang rối)
+    if (!this.solved && this.crossings.points.length > 0) {
+      this.crossings.points.forEach((pt) => {
+        const ringR = 6 + Math.sin(this.pulsePhase * 3) * 2;
+        ctx.save();
+        ctx.strokeStyle = "rgba(255, 71, 87, 0.85)";
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, ringR, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = "#fff";
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
     }
 
-    if (!this.solved) {
-      ctx.save();
-      ctx.fillStyle = "rgba(255, 130, 150, 0.75)";
-      ctx.beginPath();
-      ctx.arc(this.trollStar.x, this.trollStar.y, 8, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.font = "11px 'Be Vietnam Pro', sans-serif";
-      ctx.fillStyle = "rgba(255, 195, 205, 0.85)";
-      ctx.textAlign = "center";
-      ctx.fillText("★ Sao Hay Dỗi", this.trollStar.x, this.trollStar.y + 22);
-      ctx.restore();
-    }
-
-    this.stars.forEach((s, idx) => {
-      const isConnected = idx < this.currentStep;
-      const isNext = idx === this.currentStep && !this.solved;
-      const radius = isNext ? 10 + Math.sin(this.pulsePhase) * 3 : (isConnected ? 9 : 7);
+    // 4. Vẽ các ngôi sao tình yêu
+    this.nodes.forEach((node, idx) => {
+      const isDragged = idx === this.draggedNodeIdx;
+      const r = isDragged ? 13 : 10;
 
       ctx.save();
-      if (isNext) {
-        ctx.strokeStyle = "rgba(255, 225, 130, 0.8)";
+
+      // Vòng hào quang phát sáng khi đang kéo
+      if (isDragged) {
+        ctx.strokeStyle = "rgba(246, 195, 68, 0.5)";
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(s.x, s.y, 17 + Math.sin(this.pulsePhase) * 3, 0, Math.PI * 2);
+        ctx.arc(node.x, node.y, 22 + Math.sin(this.pulsePhase * 4) * 3, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      ctx.fillStyle = isConnected || isNext ? "#fff0b8" : "rgba(239, 224, 193, 0.45)";
-      ctx.shadowColor = "#ffca4b";
-      ctx.shadowBlur = isConnected || isNext ? 14 : 4;
+      // Bóng sáng của ngôi sao
+      ctx.shadowColor = this.solved ? "#ffe299" : isDragged ? "#f6c344" : "#ff6b81";
+      ctx.shadowBlur = this.solved ? 18 : isDragged ? 14 : 8;
+
+      // Vẽ viên ngọc ngôi sao tỏa sáng
+      const grad = ctx.createRadialGradient(node.x - 2, node.y - 2, 1, node.x, node.y, r);
+      if (this.solved) {
+        grad.addColorStop(0, "#ffffff");
+        grad.addColorStop(0.5, "#ffe699");
+        grad.addColorStop(1, "#d49a20");
+      } else if (isDragged) {
+        grad.addColorStop(0, "#ffffff");
+        grad.addColorStop(0.6, "#f6c344");
+        grad.addColorStop(1, "#8e1628");
+      } else {
+        grad.addColorStop(0, "#ffffff");
+        grad.addColorStop(0.5, "#ffb8c4");
+        grad.addColorStop(1, "#750d1d");
+      }
+
+      ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.arc(s.x, s.y, radius, 0, Math.PI * 2);
+      ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
       ctx.fill();
 
-      ctx.fillStyle = "#5a0612";
-      ctx.font = "bold 10px sans-serif";
+      // Viền ngọc
+      ctx.strokeStyle = this.solved ? "#fff" : "rgba(255, 255, 255, 0.8)";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Nhãn tên ngôi sao bên dưới
+      ctx.font = "bold 9.5px 'Be Vietnam Pro', sans-serif";
       ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(s.label, s.x, s.y);
+      ctx.fillStyle = this.solved ? "#ffe699" : "rgba(255, 240, 220, 0.85)";
+      ctx.shadowBlur = 3;
+      ctx.shadowColor = "#000";
+      ctx.fillText(node.label, node.x, node.y + (isDragged ? 24 : 20));
+
       ctx.restore();
     });
   }
 }
+
+// Giữ alias tương thích nếu có code cũ tham chiếu StarConstellationGame
+class StarConstellationGame extends UntangleHeartGame {}
 
 /* ============================================================================
    4. ẤN KÝ 01: THÁM TỬ MURDLE - VÒNG TRÒN 5 BÔNG HOA TÌM KẺ NÓI DỐI

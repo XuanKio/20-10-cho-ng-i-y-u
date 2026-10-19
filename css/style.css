@@ -1073,10 +1073,29 @@ html, body {
 /* ==========================================================================
    CHẶNG 3: CHÒM SAO GENSHIN & THIỆP REN CANVA (ĐÃ SỬA TỈ LỆ 800x566)
    ========================================================================== */
+.untangle-counter-pill {
+  display: inline-block;
+  margin-top: 6px;
+  background: rgba(255, 107, 129, 0.2);
+  border: 1px solid rgba(255, 107, 129, 0.55);
+  color: #ffb8c4;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.untangle-counter-pill.is-solved {
+  background: rgba(85, 239, 196, 0.22);
+  border-color: #55efc4;
+  color: #55efc4;
+}
+
 .constellation-board-wrap {
-  width: min(88vw, 330px);
-  height: 245px;
-  background: radial-gradient(circle at 50% 50%, rgba(32, 12, 45, 0.92) 0%, rgba(15, 4, 18, 0.96) 100%);
+  width: min(90vw, 330px);
+  height: 255px;
+  background: radial-gradient(circle at 50% 50%, rgba(35, 10, 30, 0.94) 0%, rgba(15, 3, 12, 0.98) 100%);
   border: 1.5px solid rgba(246, 195, 68, 0.55);
   border-radius: 20px;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
@@ -1084,9 +1103,28 @@ html, body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  touch-action: none;
+  user-select: none;
 }
 
-#constellationCanvas { width: 100%; height: 100%; display: block; cursor: pointer; }
+#constellationCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+  cursor: grab;
+}
+
+#constellationCanvas.is-dragging {
+  cursor: grabbing;
+}
+
+.untangle-controls-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+}
 
 .canva-lace-card-container {
   position: relative;
