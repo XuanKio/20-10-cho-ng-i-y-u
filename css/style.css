@@ -972,7 +972,6 @@ html, body {
    ========================================================================== */
 .locket-host-wrapper, .room2-locket-host {
   width: 100%;
-  height: 380px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -980,105 +979,96 @@ html, body {
 
 .locket-widget-shell {
   width: 100%;
-  max-width: 345px;
-  height: 100%;
-  background: #171214;
+  max-width: 320px;
+  background: #151012;
   color: #ffffff;
-  border-radius: 24px;
-  padding: 10px 12px;
-  border: 2px solid rgba(246, 195, 68, 0.55);
+  border-radius: 26px;
+  padding: 12px;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 6px;
+  gap: 10px;
 }
 
 .locket-progress-row { display: flex; gap: 3px; width: 100%; }
 .locket-seg { flex: 1; height: 3px; background: rgba(255, 255, 255, 0.22); border-radius: 99px; overflow: hidden; }
-.locket-seg.done .locket-seg-fill, .locket-seg.active .locket-seg-fill { width: 100%; height: 100%; background: var(--locket-gold); }
+.locket-seg.done .locket-seg-fill, .locket-seg.active .locket-seg-fill { width: 100%; height: 100%; background: #ffffff; }
 
 .locket-top-bar { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-.locket-user-pill { display: flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.1); padding: 3px 9px 3px 4px; border-radius: 999px; }
-.locket-avatar { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--locket-gold); }
-.locket-username { font-size: 11px; font-weight: 700; color: #fff; }
-.locket-date-tag { font-size: 10px; color: var(--locket-gold); font-weight: 600; }
+.locket-date-tag { font-size: 12px; color: rgba(255, 255, 255, 0.85); font-weight: 600; letter-spacing: 0.02em; }
 
 .locket-mode-btn {
-  background: rgba(246, 195, 68, 0.18);
-  color: var(--locket-gold);
-  border: 1px solid rgba(246, 195, 68, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: none;
   border-radius: 999px;
-  padding: 4px 10px;
+  padding: 5px 12px;
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
 }
 
-.locket-flip-stage { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
+.locket-flip-stage { display: flex; flex-direction: column; gap: 10px; }
+
+/* Ảnh Locket luôn là hình vuông 1:1 như app thật */
 .locket-square-card {
   position: relative;
   width: 100%;
-  flex: 1;
-  min-height: 0;
-  border-radius: 22px;
+  aspect-ratio: 1 / 1;
+  border-radius: 32px;
   overflow: hidden;
-  border: 2.5px solid var(--locket-gold);
   background: #241b1e;
 }
 
 .locket-media-slot { width: 100%; height: 100%; }
 .locket-media-slot img, .locket-media-slot video { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+/* Vùng chạm trái/phải vô hình, không vẽ nút mũi tên */
 .locket-tap-zone {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  top: 0;
+  bottom: 0;
+  width: 50%;
   border: none;
-  background: rgba(0, 0, 0, 0.42);
-  color: #fff;
-  font-size: 18px;
+  background: transparent;
   cursor: pointer;
   z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
-.zone-prev { left: 8px; }
-.zone-next { right: 8px; }
+.zone-prev { left: 0; }
+.zone-next { right: 0; }
 
-.locket-Verify-burst { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 8; }
-.locket-flying-emoji { position: absolute; bottom: 10px; font-size: 24px; animation: locketEmojiFly 1s ease-out forwards; }
+.locket-burst-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 8; }
+.locket-flying-heart { position: absolute; bottom: 10px; font-size: 22px; color: #ff6b81; animation: locketEmojiFly 1s ease-out forwards; }
 
-.locket-reaction-bar { display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.1); border-radius: 999px; padding: 4px 10px; }
-.locket-reply-hint { font-size: 11px; color: rgba(255, 255, 255, 0.65); }
-.locket-emoji-btns { display: flex; gap: 6px; }
-.locket-react-btn { border: none; background: transparent; font-size: 16px; cursor: pointer; }
+.locket-heart-btn {
+  align-self: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ff6b81;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
 
-.locket-month-stage { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
-.locket-month-header { display: flex; justify-content: space-between; font-size: 11px; color: var(--locket-gold); }
-.locket-month-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; flex: 1; align-content: center; }
+.locket-month-stage { display: flex; flex-direction: column; gap: 8px; }
+.locket-month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 
 .locket-cal-thumb {
   position: relative;
   aspect-ratio: 1 / 1;
-  border-radius: 8px;
+  border: none;
+  padding: 0;
+  border-radius: 14px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
 }
-.locket-cal-thumb.has-media { border: 1.5px solid var(--locket-gold); cursor: pointer; padding: 0; }
-.locket-cal-thumb.has-media img { width: 100%; height: 100%; object-fit: cover; }
-.locket-cal-day { position: absolute; bottom: 1px; right: 3px; font-size: 8.5px; font-weight: 700; color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9); }
-.locket-month-tip { font-size: 10px; text-align: center; color: rgba(255, 255, 255, 0.7); }
+.locket-cal-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.locket-cal-day { position: absolute; left: 6px; bottom: 5px; font-size: 10px; font-weight: 700; color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9); }
+
 
 /* ==========================================================================
    CHẶNG 3: CHÒM SAO GENSHIN & THIỆP REN CANVA (ĐÃ SỬA TỈ LỆ 800x566)
@@ -1225,16 +1215,12 @@ html, body {
 }
 .lace-heart-item.visited .room-check-badge { display: flex; }
 
-/* PUZZLE 1: THÁM TỬ MURDLE - VÒNG TRÒN 5 BÔNG HOA TÌM KẺ NÓI DỐI */
+/* PUZZLE 1: TÌM BÔNG HOA NÓI DỐI (VÒNG TRÒN ẢNH HOA THẬT) */
 .murdle-circle-arena {
   position: relative;
-  width: 246px;
-  height: 246px;
+  width: 280px;
+  height: 280px;
   margin: 0 auto;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(45, 7, 16, 0.9) 0%, rgba(20, 2, 7, 0.96) 100%);
-  border: 1.5px solid rgba(246, 195, 68, 0.45);
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.5);
   flex-shrink: 0;
 }
 
@@ -1242,99 +1228,89 @@ html, body {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 76%;
-  height: 76%;
+  width: 72%;
+  height: 72%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  border: 1.5px dashed rgba(246, 195, 68, 0.45);
+  border: 1px dashed rgba(240, 223, 190, 0.35);
   pointer-events: none;
 }
-
-.murdle-center-badge {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: rgba(94, 8, 20, 0.92);
-  border: 1.5px solid var(--locket-gold);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  text-align: center;
-  pointer-events: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
-}
-
-.murdle-center-icon { font-size: 20px; line-height: 1; }
-.murdle-center-text { font-size: 9px; font-weight: 700; color: var(--locket-gold); }
 
 .murdle-flower-node {
   position: absolute;
   transform: translate(-50%, -50%);
-  width: 64px;
-  height: 64px;
+  width: 62px;
+  height: 62px;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.55);
   border-radius: 50%;
-  background: rgba(38, 6, 14, 0.94);
-  border: 1.5px solid rgba(240, 223, 190, 0.45);
-  color: var(--cream-light);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1px;
+  background: #2b0a12;
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  padding: 2px;
+}
+
+.murdle-flower-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
 }
 
 .murdle-flower-node.is-selected {
-  transform: translate(-50%, -50%) scale(1.12);
-  border: 2px solid var(--locket-gold);
-  background: linear-gradient(145deg, rgba(135, 16, 34, 0.96), rgba(65, 6, 16, 0.96));
-  box-shadow: 0 0 16px rgba(246, 195, 68, 0.65);
+  transform: translate(-50%, -50%) scale(1.14);
+  border-color: var(--locket-gold);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
   z-index: 4;
 }
 
-.murdle-flower-node.is-marked-true {
-  border-color: #55efc4;
-}
+.murdle-flower-node.is-marked-true { border-color: #55efc4; }
+.murdle-flower-node.is-marked-true .murdle-flower-photo { opacity: 0.55; }
 
 .murdle-flower-node.is-culprit {
-  border: 2.5px solid #ff4757;
-  box-shadow: 0 0 18px #ff4757;
+  border-color: #ff4757;
+  box-shadow: 0 0 16px rgba(255, 71, 87, 0.8);
 }
 
 .murdle-seat-pill {
-  font-size: 8.5px;
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--locket-gold);
+  color: #3b0710;
+  font-size: 10px;
   font-weight: 800;
-  color: var(--locket-gold);
-  line-height: 1;
-}
-
-.murdle-flower-emoji {
-  font-size: 20px;
-  line-height: 1.1;
+  line-height: 18px;
+  text-align: center;
 }
 
 .murdle-flower-name {
-  font-size: 8.5px;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 3px;
+  font-size: 10px;
   font-weight: 700;
+  color: #fff;
   white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .murdle-truth-tag {
   position: absolute;
-  bottom: -6px;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
   background: #00b894;
   color: #fff;
-  font-size: 7.5px;
+  font-size: 8.5px;
   font-weight: 800;
-  padding: 1px 5px;
+  padding: 1px 6px;
   border-radius: 999px;
 }
 

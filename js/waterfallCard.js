@@ -1,8 +1,8 @@
 /**
- * WATERFALLCARD.JS - MODULE COSPLAY CHẾ ĐỘ XEM KỶ NIỆM THÁNG CỦA LOCKET (LOCKET MONTHLY RECAP)
- * Áp dụng Single Responsibility Principle (SRP) & Component Pattern:
- * Tái sử dụng cùng một class LocketMonthlyMemories cho cả Cánh Phải (Chặng 2) và Phòng Our Memories (Chặng 4)
- * mà không bị lặp code (DRY). Tuyệt đối không ghi chú thích thoại dưới ảnh.
+ * WATERFALLCARD.JS - LOCKET: LẬT ẢNH VUÔNG + LƯỚI KỶ NIỆM
+ * Single Responsibility: class này chỉ lo hiển thị một "đoạn" Locket (danh sách ảnh/video truyền vào).
+ * Component Pattern: tạo nhiều instance cho nhiều đoạn (thiệp Chặng 2, Ấn Ký 02 Chặng 4) mà không lặp code.
+ * Không ghi chú thoại dưới ảnh, không emoji, chỉ có: thanh tiến trình, ngày, ảnh vuông, nút tim, nút xem lưới.
  */
 
 class LocketMonthlyMemories {
@@ -10,163 +10,102 @@ class LocketMonthlyMemories {
     this.container = document.getElementById(containerId);
     this.items = items || [];
     this.onMilestoneReached = options.onMilestoneReached;
-    this.compact = Boolean(options.compact);
+    this.milestoneViews = options.milestoneViews || 3;
 
     this.currentIndex = 0;
-    this.viewMode = "flip"; // "flip" (Lật từng tấm Locket) | "month" (Lưới Kỷ Niệm Tháng Locket)
-    this.viewedCount = 0;
+    this.viewMode = "flip"; // "flip" (lật từng ảnh) | "grid" (lưới thu nhỏ)
+    this.seenIndexes = new Set();
     this.milestoneTriggered = false;
     this.touchStartX = 0;
     this.touchStartY = 0;
 
     if (this.container && this.items.length > 0) {
       this.renderShell();
-      this.updateActiveSlide();
       this.bindEvents();
+      this.updateActiveSlide();
     }
+  }
+
+  // Mỗi phần tử được tìm bằng thuộc tính data-role để không phụ thuộc id toàn cục (tránh trùng giữa 2 instance)
+  role(name) {
+    return this.container.querySelector(`[data-role="${name}"]`);
   }
 
   renderShell() {
     const progressSegments = this.items
-      .map((_, i) => `<div class="locket-seg" data-idx="${i}"><div class="locket-seg-fill"></div></div>`)
+      .map(() => `<div class="locket-seg"><div class="locket-seg-fill"></div></div>`)
       .join("");
 
-    const monthGridCells = this.renderMonthGridHTML();
+    const gridCells = this.items
+      .map((item, idx) => {
+        const thumbUrl = item.type === "video" ? item.poster : item.url;
+        return `
+          <button class="locket-cal-thumb" data-jump-idx="${idx}">
+            <img src="${thumbUrl}" alt="" draggable="false" />
+            <span class="locket-cal-day">${item.day}</span>
+          </button>`;
+      })
+      .join("");
 
     this.container.innerHTML = `
-      <div class="locket-widget-shell ${this.compact ? "is-compact" : ""}">
-        <!-- Thanh vạch tiến trình kiểu Locket Recap -->
-        <div class="locket-progress-row">
-          ${progressSegments}
-        </div>
+      <div class="locket-widget-shell">
+        <div class="locket-progress-row">${progressSegments}</div>
 
-        <!-- Header Locket: Avatar đôi + Ngày tháng + Nút chuyển chế độ Lịch Tháng -->
         <div class="locket-top-bar">
-          <div class="locket-user-pill">
-            <img src="assets/images/photo_glasses_cute.jpg" alt="" class="locket-avatar" draggable="false" />
-            <span class="locket-username">Xuân &amp; Em ♥</span>
-            <span class="locket-date-tag" data-role="dateTag">02 Th10</span>
-          </div>
-
-          <button class="locket-mode-btn" data-role="modeToggleBtn" title="Chuyển chế độ Lịch Kỷ Niệm Tháng">
-            📅 Tháng 10
-          </button>
+          <span class="locket-date-tag" data-role="dateTag"></span>
+          <button class="locket-mode-btn" data-role="modeToggleBtn">Xem lưới</button>
         </div>
 
-        <!-- VÙNG 1: CHẾ ĐỘ LẬT ẢNH LOCKET (SQUARE ROUNDED VIEWPORT) -->
         <div class="locket-flip-stage" data-role="flipStage">
           <div class="locket-square-card" data-role="squareCard">
             <div class="locket-media-slot" data-role="mediaSlot"></div>
-
-            <!-- Vùng chạm Trái / Phải để lật nhanh như Locket -->
-            <button class="locket-tap-zone zone-prev" data-role="prevBtn" aria-label="Ảnh trước">‹</button>
-            <button class="locket-tap-zone zone-next" data-role="nextBtn" aria-label="Ảnh tiếp">›</button>
-
-            <!-- Lớp bắn tim bay lên khi thả cảm xúc Locket -->
-            <div class="locket-Verify-burst" data-role="emojiBurstLayer"></div>
+            <button class="locket-tap-zone zone-prev" data-role="prevBtn" aria-label="Ảnh trước"></button>
+            <button class="locket-tap-zone zone-next" data-role="nextBtn" aria-label="Ảnh tiếp"></button>
+            <div class="locket-burst-layer" data-role="burstLayer"></div>
           </div>
-
-          <!-- Thanh gửi cảm xúc bên dưới chuẩn giao diện Locket -->
-          <div class="locket-reaction-bar">
-            <span class="locket-reply-hint">Gửi cảm xúc...</span>
-            <div class="locket-emoji-btns">
-              <button class="locket-react-btn" data-emoji="❤️">❤️</button>
-              <button class="locket-react-btn" data-emoji="🔥">🔥</button>
-              <button class="locket-react-btn" data-emoji="🥰">🥰</button>
-              <button class="locket-react-btn" data-emoji="✨">✨</button>
-            </div>
-          </div>
+          <button class="locket-heart-btn" data-role="heartBtn" aria-label="Thả tim">&hearts;</button>
         </div>
 
-        <!-- VÙNG 2: CHẾ ĐỘ XEM LỊCH KỶ NIỆM THÁNG LOCKET (MONTHLY RECAP GRID) -->
-        <div class="locket-month-stage hidden" data-role="monthStage">
-          <div class="locket-month-header">
-            <strong>Kỷ Niệm Tháng 10 • Locket Recap</strong>
-            <span>${this.items.length} khoảnh khắc</span>
-          </div>
-          <div class="locket-month-grid">
-            ${monthGridCells}
-          </div>
-          <p class="locket-month-tip">(Chạm vào ngày bất kỳ để phóng to khoảnh khắc đó)</p>
+        <div class="locket-month-stage hidden" data-role="gridStage">
+          <div class="locket-month-grid">${gridCells}</div>
         </div>
       </div>
     `;
-  }
-
-  renderMonthGridHTML() {
-    // Tạo bảng 28 ô đại diện cho lưới lịch kỷ niệm tháng Locket, gán các tấm ảnh/video vào các ngày
-    const slotMap = {
-      2: 0, 5: 1, 7: 2, 10: 3, 12: 4, 14: 5,
-      16: 6, 18: 7, 19: 8, 20: 9, 23: 10, 26: 11
-    };
-
-    let html = "";
-    for (let d = 1; d <= 28; d++) {
-      const itemIdx = slotMap[d];
-      if (itemIdx !== undefined && this.items[itemIdx]) {
-        const item = this.items[itemIdx];
-        const thumbUrl = item.type === "video" ? item.poster : item.url;
-        html += `
-          <button class="locket-cal-thumb has-media" data-jump-idx="${itemIdx}">
-            <img src="${thumbUrl}" alt="" draggable="false" />
-            <span class="locket-cal-day">${d}</span>
-          </button>
-        `;
-      } else {
-        html += `
-          <div class="locket-cal-thumb empty-day">
-            <span>${d}</span>
-          </div>
-        `;
-      }
-    }
-    return html;
   }
 
   updateActiveSlide(direction = "next") {
     const item = this.items[this.currentIndex];
     if (!item) return;
 
-    const mediaSlot = this.container.querySelector('[data-role="mediaSlot"]');
-    const dateTag = this.container.querySelector('[data-role="dateTag"]');
-    const squareCard = this.container.querySelector('[data-role="squareCard"]');
+    const dateTag = this.role("dateTag");
+    const mediaSlot = this.role("mediaSlot");
+    const squareCard = this.role("squareCard");
 
-    if (dateTag) {
-      dateTag.textContent = `${item.day} ${item.badge || ""}`;
-    }
+    if (dateTag) dateTag.textContent = item.day;
 
     if (squareCard) {
       squareCard.classList.remove("flip-anim-next", "flip-anim-prev");
-      void squareCard.offsetWidth;
+      void squareCard.offsetWidth; // ép trình duyệt tính lại layout để animation chạy lại
       squareCard.classList.add(direction === "prev" ? "flip-anim-prev" : "flip-anim-next");
     }
 
     if (mediaSlot) {
-      if (item.type === "video") {
-        mediaSlot.innerHTML = `
-          <video src="${item.url}" poster="${item.poster || ""}" autoplay loop muted playsinline></video>
-        `;
-      } else {
-        mediaSlot.innerHTML = `
-          <img src="${item.url}" alt="" draggable="false" />
-        `;
-      }
+      mediaSlot.innerHTML =
+        item.type === "video"
+          ? `<video src="${item.url}" poster="${item.poster || ""}" autoplay loop muted playsinline></video>`
+          : `<img src="${item.url}" alt="" draggable="false" />`;
     }
 
-    // Cập nhật thanh vạch tiến trình trên cùng
-    const segs = this.container.querySelectorAll(".locket-seg");
-    segs.forEach((seg, idx) => {
+    this.container.querySelectorAll(".locket-seg").forEach((seg, idx) => {
       seg.classList.toggle("done", idx < this.currentIndex);
       seg.classList.toggle("active", idx === this.currentIndex);
     });
 
-    // Kiểm tra hoàn thành nhiệm vụ xem ảnh
-    this.viewedCount++;
-    if (this.viewedCount >= 3 && !this.milestoneTriggered) {
+    // Đếm số ảnh KHÁC NHAU đã xem (trước đây đếm cả lần mở đầu nên mở khóa sớm)
+    this.seenIndexes.add(this.currentIndex);
+    if (!this.milestoneTriggered && this.seenIndexes.size >= this.milestoneViews) {
       this.milestoneTriggered = true;
-      if (typeof this.onMilestoneReached === "function") {
-        this.onMilestoneReached();
-      }
+      if (typeof this.onMilestoneReached === "function") this.onMilestoneReached();
     }
   }
 
@@ -180,107 +119,69 @@ class LocketMonthlyMemories {
     this.updateActiveSlide("prev");
   }
 
-  toggleViewMode(forceMode) {
-    this.viewMode = forceMode || (this.viewMode === "flip" ? "month" : "flip");
-    const flipStage = this.container.querySelector('[data-role="flipStage"]');
-    const monthStage = this.container.querySelector('[data-role="monthStage"]');
-    const modeBtn = this.container.querySelector('[data-role="modeToggleBtn"]');
-
-    if (this.viewMode === "month") {
-      if (flipStage) flipStage.classList.add("hidden");
-      if (monthStage) monthStage.classList.remove("hidden");
-      if (modeBtn) modeBtn.textContent = "▢ Lật Ảnh";
-    } else {
-      if (monthStage) monthStage.classList.add("hidden");
-      if (flipStage) flipStage.classList.remove("hidden");
-      if (modeBtn) modeBtn.textContent = "📅 Tháng 10";
-    }
+  setViewMode(mode) {
+    this.viewMode = mode;
+    const isGrid = mode === "grid";
+    this.role("flipStage").classList.toggle("hidden", isGrid);
+    this.role("gridStage").classList.toggle("hidden", !isGrid);
+    this.role("modeToggleBtn").textContent = isGrid ? "Lật ảnh" : "Xem lưới";
   }
 
-  spawnFloatingEmoji(emojiChar) {
-    const burstLayer = this.container.querySelector('[data-role="emojiBurstLayer"]');
-    if (!burstLayer) return;
-
-    for (let i = 0; i < 6; i++) {
-      const span = document.createElement("span");
-      span.className = "locket-flying-emoji";
-      span.textContent = emojiChar;
-      span.style.left = `${20 + Math.random() * 60}%`;
-      span.style.animationDelay = `${i * 0.06}s`;
-      burstLayer.appendChild(span);
-
-      setTimeout(() => {
-        if (span.parentNode) span.parentNode.removeChild(span);
-      }, 1100);
+  spawnHearts() {
+    const layer = this.role("burstLayer");
+    if (!layer) return;
+    for (let i = 0; i < 5; i++) {
+      const heart = document.createElement("span");
+      heart.className = "locket-flying-heart";
+      heart.innerHTML = "&hearts;";
+      heart.style.left = `${20 + Math.random() * 60}%`;
+      heart.style.animationDelay = `${i * 0.07}s`;
+      layer.appendChild(heart);
+      setTimeout(() => heart.remove(), 1100);
     }
   }
 
   bindEvents() {
-    const prevBtn = this.container.querySelector('[data-role="prevBtn"]');
-    const nextBtn = this.container.querySelector('[data-role="nextBtn"]');
-    const modeBtn = this.container.querySelector('[data-role="modeToggleBtn"]');
-    const squareCard = this.container.querySelector('[data-role="squareCard"]');
+    this.role("prevBtn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.prevSlide();
+    });
+    this.role("nextBtn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.nextSlide();
+    });
+    this.role("modeToggleBtn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.setViewMode(this.viewMode === "flip" ? "grid" : "flip");
+    });
+    this.role("heartBtn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.spawnHearts();
+    });
 
-    if (prevBtn) {
-      prevBtn.addEventListener("click", (e) => {
+    // Chạm vào ảnh nhỏ trong lưới -> mở đúng ảnh đó
+    this.container.querySelectorAll("[data-jump-idx]").forEach((thumb) => {
+      thumb.addEventListener("click", (e) => {
         e.stopPropagation();
-        this.prevSlide();
-      });
-    }
-
-    if (nextBtn) {
-      nextBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        this.nextSlide();
-      });
-    }
-
-    if (modeBtn) {
-      modeBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        this.toggleViewMode();
-      });
-    }
-
-    // Chạm vào từng ô ngày trong chế độ Lịch Tháng Locket -> Mở đúng tấm ảnh đó
-    this.container.querySelectorAll("[data-jump-idx]").forEach((thumbBtn) => {
-      thumbBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const idx = parseInt(thumbBtn.dataset.jumpIdx, 10);
-        this.currentIndex = idx;
-        this.toggleViewMode("flip");
+        this.currentIndex = parseInt(thumb.dataset.jumpIdx, 10);
+        this.setViewMode("flip");
         this.updateActiveSlide("next");
       });
     });
 
-    // Nút thả cảm xúc Locket (❤️ 🔥 🥰 ✨)
-    this.container.querySelectorAll(".locket-react-btn").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        this.spawnFloatingEmoji(btn.dataset.emoji || "❤️");
-        setTimeout(() => this.nextSlide(), 420);
-      });
-    });
+    // Vuốt trái/phải để lật ảnh
+    const squareCard = this.role("squareCard");
+    squareCard.addEventListener("touchstart", (e) => {
+      this.touchStartX = e.changedTouches[0].clientX;
+      this.touchStartY = e.changedTouches[0].clientY;
+    }, { passive: true });
 
-    // Vuốt Trái / Phải / Lên / Xuống kiểu Locket trên iPhone 17 Pro
-    if (squareCard) {
-      squareCard.addEventListener("touchstart", (e) => {
-        if (e.changedTouches && e.changedTouches.length > 0) {
-          this.touchStartX = e.changedTouches[0].clientX;
-          this.touchStartY = e.changedTouches[0].clientY;
-        }
-      }, { passive: true });
-
-      squareCard.addEventListener("touchend", (e) => {
-        if (e.changedTouches && e.changedTouches.length > 0) {
-          const dx = e.changedTouches[0].clientX - this.touchStartX;
-          const dy = e.changedTouches[0].clientY - this.touchStartY;
-          if (Math.abs(dx) > 25 || Math.abs(dy) > 25) {
-            if (dx < -25 || dy < -25) this.nextSlide();
-            else this.prevSlide();
-          }
-        }
-      }, { passive: true });
-    }
+    squareCard.addEventListener("touchend", (e) => {
+      const dx = e.changedTouches[0].clientX - this.touchStartX;
+      const dy = e.changedTouches[0].clientY - this.touchStartY;
+      if (Math.abs(dx) < 30 || Math.abs(dx) < Math.abs(dy)) return;
+      if (dx < 0) this.nextSlide();
+      else this.prevSlide();
+    }, { passive: true });
   }
 }

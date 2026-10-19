@@ -151,7 +151,7 @@ class VinylTurntableGame {
     if (this.scWaveEl) this.scWaveEl.classList.add("is-playing");
 
     if (this.statusText) {
-      this.statusText.innerHTML = `✅ Đã lắp đĩa: <strong>SEVENTEEN - ${track.title}</strong>`;
+      this.statusText.innerHTML = `Đã lắp đĩa: <strong>SEVENTEEN - ${track.title}</strong>`;
     }
 
     if (this.audioPlayer) {
@@ -242,7 +242,7 @@ class PyroBurnRevealGame {
     ctx.fillStyle = "#f9dfb8";
     ctx.font = "bold 15px 'Be Vietnam Pro', sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText("🔥 PHONG ẤN NGUYÊN TỐ HỎA 🔥", w / 2, h / 2 - 10);
+    ctx.fillText("PHONG ẤN NGUYÊN TỐ HỎA", w / 2, h / 2 - 10);
 
     ctx.fillStyle = "#f3c392";
     ctx.font = "12px 'Be Vietnam Pro', sans-serif";
@@ -342,7 +342,7 @@ class PyroBurnRevealGame {
     const displayPercent = Math.min(100, Math.round((ratio / 0.36) * 100));
 
     if (this.progressEl) {
-      this.progressEl.textContent = `Đang đốt cháy phong ấn: ${displayPercent}% 🔥 (Tiếp tục xoa ngón tay!)`;
+      this.progressEl.textContent = `Đang đốt cháy phong ấn: ${displayPercent}% (Tiếp tục xoa ngón tay!)`;
     }
 
     if (ratio >= 0.36 && !this.autoBurning) {
@@ -362,7 +362,7 @@ class PyroBurnRevealGame {
         this.completed = true;
         this.wrapper.classList.add("burned-away");
         if (this.progressEl) {
-          this.progressEl.textContent = "✨ Đã phá giải Phong Ấn! Hãy chạm vào Dấu Sáp Hồng trên phong bì!";
+          this.progressEl.textContent = "Đã phá giải Phong Ấn! Hãy chạm vào Dấu Sáp Hồng trên phong bì!";
         }
         if (typeof this.onBurnComplete === "function") {
           this.onBurnComplete();
@@ -451,13 +451,13 @@ class StarConstellationGame {
       if (targetStar && Math.hypot(x - targetStar.x, y - targetStar.y) < 34) {
         this.currentStep++;
         if (this.statusEl) {
-          this.statusEl.textContent = `✨ Đã kết nối ${this.currentStep} / ${this.stars.length} ngôi sao Định Mệnh!`;
+          this.statusEl.textContent = `Đã kết nối ${this.currentStep} / ${this.stars.length} ngôi sao Định Mệnh!`;
         }
 
         if (this.currentStep >= this.stars.length) {
           this.solved = true;
           if (this.statusEl) {
-            this.statusEl.textContent = "🌟 Chòm Sao Trái Tim đã tỏa sáng! Mở khóa Thiệp Kỷ Niệm!";
+            this.statusEl.textContent = "Chòm Sao Trái Tim đã tỏa sáng! Mở khóa Thiệp Kỷ Niệm!";
           }
           setTimeout(() => {
             if (typeof this.onSolved === "function") {
@@ -659,19 +659,13 @@ class MurdleFlowerCirclePuzzle {
   }
 
   renderCircle() {
-    this.circleEl.innerHTML = `
-      <div class="murdle-ring-line"></div>
-      <div class="murdle-center-badge">
-        <span class="murdle-center-icon">🕵️‍♀️</span>
-        <span class="murdle-center-text">4 Thật • 1 Dối</span>
-      </div>
-    `;
+    this.circleEl.innerHTML = `<div class="murdle-ring-line"></div>`;
 
     const total = this.suspects.length;
-    const radiusPct = 38.5;
+    const radiusPct = 36;
 
     this.suspects.forEach((s, idx) => {
-      // Xếp 5 bông hoa thành vòng tròn bắt đầu từ đỉnh 12 giờ (-90 độ)
+      // Xếp các bông hoa thành vòng tròn bắt đầu từ đỉnh 12 giờ (-90 độ)
       const angleRad = ((-90 + idx * (360 / total)) * Math.PI) / 180;
       const xPct = 50 + Math.cos(angleRad) * radiusPct;
       const yPct = 50 + Math.sin(angleRad) * radiusPct;
@@ -693,10 +687,10 @@ class MurdleFlowerCirclePuzzle {
       node.style.top = `${yPct}%`;
 
       node.innerHTML = `
+        <img class="murdle-flower-photo" src="${s.photo}" alt="${s.name}" draggable="false" style="object-position:${s.focus || "50% 50%"}" />
         <span class="murdle-seat-pill">${s.seat}</span>
-        <span class="murdle-flower-emoji">${s.icon}</span>
         <span class="murdle-flower-name">${s.name}</span>
-        ${isMarkedTrue ? '<span class="murdle-truth-tag">✓ Thật</span>' : ""}
+        ${isMarkedTrue ? '<span class="murdle-truth-tag">Thật</span>' : ""}
       `;
 
       node.addEventListener("click", () => {
@@ -716,7 +710,7 @@ class MurdleFlowerCirclePuzzle {
     if (!s) return;
 
     if (this.titleEl) {
-      this.titleEl.textContent = `${s.icon} ${s.seat} • ${s.name}`;
+      this.titleEl.textContent = `${s.name} (số ${s.seat})`;
     }
     if (this.neighborsEl) {
       this.neighborsEl.textContent = s.neighbors;
@@ -726,7 +720,7 @@ class MurdleFlowerCirclePuzzle {
     }
     if (this.markTruthBtn) {
       const marked = this.truthMarks.has(this.selectedIdx);
-      this.markTruthBtn.textContent = marked ? "✓ Đã ghi: Nói thật (Bỏ)" : "📝 Đánh dấu: Nói thật";
+      this.markTruthBtn.textContent = marked ? "✓ Đã ghi: Nói thật (Bỏ)" : "Đánh dấu: Nói thật";
     }
   }
 }
@@ -832,7 +826,7 @@ class PhotoTileSwapPuzzle {
     if (this.tiles.every((pieceId, idx) => pieceId === idx)) {
       this.solved = true;
       if (this.progressEl) {
-        this.progressEl.textContent = "✨ Hoàn hảo: 9 / 9 ô!";
+        this.progressEl.textContent = "Hoàn hảo: 9 / 9 ô!";
       }
       setTimeout(() => {
         if (typeof this.onSolved === "function") this.onSolved();

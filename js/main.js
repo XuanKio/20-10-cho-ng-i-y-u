@@ -69,19 +69,18 @@ class RomanticAppController {
       }
     );
 
-    // 5. Locket Kỷ Niệm Tháng 10 ở Cánh Phải (Chặng 2)
+    // 5. Locket đoạn 1 ở Cánh Phải của thiệp (Chặng 2)
     this.stage2Locket = new LocketMonthlyMemories(
       "stage2LocketContainer",
-      this.config.stage2.waterfallPhotos,
+      this.config.stage2.locketParts[0],
       {
-        compact: true,
         onMilestoneReached: () => {
           if (this.calendarPuzzle) {
             this.calendarPuzzle.completeFromWaterfall();
           }
           if (s2Btn && this.stage2WingPhase === "right") {
             this.stage2WingPhase = "done";
-            s2Btn.textContent = "🌟 Đã xem Locket! Sang Giải Đố Chòm Sao →";
+            s2Btn.textContent = "Sang giải đố chòm sao →";
             s2Btn.classList.remove("hidden");
             s2Btn.classList.add("glow-pulse");
           }
@@ -89,12 +88,11 @@ class RomanticAppController {
       }
     );
 
-    // 6. Locket Kỷ Niệm Tháng 10 ở Phòng 2 - Our Memories (Chặng 4)
+    // 6. Locket đoạn 2 ở Ấn Ký 02 (Chặng 4)
     this.room2Locket = new LocketMonthlyMemories(
       "room2LocketContainer",
-      this.config.stage2.waterfallPhotos,
+      this.config.stage2.locketParts[1],
       {
-        compact: false,
         onMilestoneReached: () => {
           if (this.threeScene) this.threeScene.burstHearts(18);
         }
@@ -263,21 +261,21 @@ class RomanticAppController {
           // Chuyển sang Cánh 2: Tâm Thư Viết Tay
           this.stage2WingPhase = "center";
           if (trifold) trifold.dataset.activeWing = "center";
-          if (statusEl) statusEl.textContent = "💌 Đọc tâm thư anh viết riêng cho em rồi mở Locket Kỷ Niệm nhé!";
-          stepBtn.textContent = "Tiếp tục: Xem Kỷ Niệm Tháng Locket →";
+          if (statusEl) statusEl.textContent = "Đọc thư anh viết cho em, rồi xem Locket nhé.";
+          stepBtn.textContent = "Tiếp tục: Xem Locket →";
           return;
         }
 
         if (this.stage2WingPhase === "center") {
-          // Chuyển sang Cánh 3: Locket Kỷ Niệm Tháng (Phải lật ít nhất 3 ảnh mới hiện nút tiếp!)
+          // Chuyển sang Cánh 3: Locket đoạn 1 (phải lật ít nhất 3 ảnh khác nhau mới hiện nút tiếp)
           this.stage2WingPhase = "right";
           if (trifold) trifold.dataset.activeWing = "right";
           if (statusEl) {
-            statusEl.textContent = "📸 Hãy lật xem ít nhất 3 khoảnh khắc Locket (hoặc bấm 📅 Tháng 10) để mở khóa Chặng 3!";
+            statusEl.textContent = "Lật xem ít nhất 3 ảnh Locket để mở khóa chặng tiếp theo.";
           }
           if (this.stage2Locket && this.stage2Locket.milestoneTriggered) {
             this.stage2WingPhase = "done";
-            stepBtn.textContent = "🌟 Đã xem Locket! Sang Giải Đố Chòm Sao →";
+            stepBtn.textContent = "Sang giải đố chòm sao →";
           } else {
             stepBtn.classList.add("hidden");
           }
@@ -371,7 +369,7 @@ class RomanticAppController {
       if (this.solvedRooms.size < 3) {
         progressText.textContent = `Đã giải mã ${this.solvedRooms.size}/3 Ấn Ký! Hãy mở tiếp trái tim 0${this.unlockedRoomLevel} nhé ♥`;
       } else {
-        progressText.textContent = "🌟 Xuất sắc! Em đã giải mã đủ cả 3 Ấn Ký Ký Ức!";
+        progressText.textContent = "Xuất sắc! Em đã giải mã đủ cả 3 Ấn Ký Ký Ức!";
         document.getElementById("toStage5Btn")?.classList.remove("hidden");
       }
     }
@@ -392,7 +390,7 @@ class RomanticAppController {
           void btn.offsetWidth;
           btn.classList.add("shake-cell");
           if (progressText) {
-            progressText.textContent = `🔒 Phải giải đố xong Ấn Ký 0${this.unlockedRoomLevel} trước thì mới mở được Ấn Ký 0${roomNum} nhé!`;
+            progressText.textContent = `Phải giải đố xong Ấn Ký 0${this.unlockedRoomLevel} trước thì mới mở được Ấn Ký 0${roomNum} nhé!`;
           }
           return;
         }

@@ -108,20 +108,24 @@ const APP_CONFIG = {
 Chúc em một mùa 20/10 sớm thật ý nghĩa và tràn đầy kỷ niệm vui. Mong rằng mỗi ngày trôi qua sẽ mang đến cho em thật nhiều sức khỏe, niềm vui và may mắn. Những điều em mong ước sẽ dần trở thành hiện thực và mỗi khoảnh khắc bên nhau đều là một ngày đáng nhớ. Hãy luôn mỉm cười rạng rỡ em nhé!`,
     handwrittenSign: "Dein Xuân ♥",
 
-    // Danh sách ảnh & video cho Locket Kỷ Niệm Tháng (Không ghi chú thoại dưới ảnh)
-    waterfallPhotos: [
-      { type: "image", url: "assets/images/photo_helmet.jpg", day: "02 Th10", badge: "💛" },
-      { type: "image", url: "assets/images/photo_cat_booth.jpg", day: "05 Th10", badge: "🐱" },
-      { type: "image", url: "assets/images/photo_gametopia.jpg", day: "08 Th10", badge: "🎮" },
-      { type: "image", url: "assets/images/photo_flight_booth.jpg", day: "11 Th10", badge: "✈️" },
-      { type: "image", url: "assets/images/photo_heart_hands.jpg", day: "14 Th10", badge: "❤️" },
-      { type: "image", url: "assets/images/photo_pillow.jpg", day: "16 Th10", badge: "✨" },
-      { type: "image", url: "assets/images/photo_eating.jpg", day: "17 Th10", badge: "🍲" },
-      { type: "image", url: "assets/images/photo_gaming.jpg", day: "18 Th10", badge: "🎧" },
-      { type: "image", url: "assets/images/photo_parking.jpg", day: "19 Th10", badge: "🛵" },
-      { type: "image", url: "assets/images/photo_pinching_cheek.jpg", day: "20 Th10", badge: "🥰" },
-      { type: "video", url: "assets/videos/video_1.mp4", poster: "assets/images/photo_helmet.jpg", day: "Recap 1", badge: "🎬" },
-      { type: "video", url: "assets/videos/video_2.mp4", poster: "assets/images/photo_cat_booth.jpg", day: "Recap 2", badge: "🎬" }
+    // Locket chia thành 2 đoạn: đoạn 1 xem ở thiệp (Chặng 2), đoạn 2 xem ở Ấn Ký 02 (Chặng 4)
+    locketParts: [
+      [
+        { type: "image", url: "assets/images/photo_helmet.jpg", day: "02 Th10" },
+        { type: "image", url: "assets/images/photo_cat_booth.jpg", day: "05 Th10" },
+        { type: "image", url: "assets/images/photo_gametopia.jpg", day: "08 Th10" },
+        { type: "image", url: "assets/images/photo_flight_booth.jpg", day: "11 Th10" },
+        { type: "image", url: "assets/images/photo_heart_hands.jpg", day: "14 Th10" },
+        { type: "image", url: "assets/images/photo_pillow.jpg", day: "16 Th10" }
+      ],
+      [
+        { type: "image", url: "assets/images/photo_eating.jpg", day: "17 Th10" },
+        { type: "image", url: "assets/images/photo_gaming.jpg", day: "18 Th10" },
+        { type: "image", url: "assets/images/photo_parking.jpg", day: "19 Th10" },
+        { type: "image", url: "assets/images/photo_pinching_cheek.jpg", day: "20 Th10" },
+        { type: "video", url: "assets/videos/video_1.mp4", poster: "assets/images/photo_helmet.jpg", day: "Video 1" },
+        { type: "video", url: "assets/videos/video_2.mp4", poster: "assets/images/photo_cat_booth.jpg", day: "Video 2" }
+      ]
     ]
   },
 
@@ -135,7 +139,7 @@ Chúc em một mùa 20/10 sớm thật ý nghĩa và tràn đầy kỷ niệm vu
     cardPhoto: "assets/images/photo_glasses_cute.jpg",
     trollQuestion: "Câu hỏi bảo mật cuối để mở 3 Ấn Ký:\nAi là người chiều chuộng và thương em nhất?",
     correctOption: "Chắc chắn là anh Xuân rồi ♥",
-    trollOption: "Hông biết đâu 😝",
+    trollOption: "Hông biết đâu",
     trollTransformedText: "Vẫn là anh Xuân chứ ai nữa! ♥"
   },
 
@@ -147,57 +151,61 @@ Chúc em một mùa 20/10 sớm thật ý nghĩa và tràn đầy kỷ niệm vu
     // Phòng 1: Giải đố Thám Tử Murdle (Vòng tròn 5 bông hoa - Tìm 1 bông hoa nói dối) -> Mở Bó hoa hồng
     room1: {
       murdleCase: {
-        ruleText: "5 bông hoa xếp thành vòng tròn. Chỉ có ĐÚNG 1 BÔNG HOA NÓI DỐI (đã giấu bó hoa 20/10), còn 4 bông kia đều nói thật 100%!",
         suspects: [
           {
             id: 0,
-            seat: "#1",
-            icon: "🌹",
-            name: "Hồng Đỏ",
-            neighbors: "Kề #5 Oải Hương & #2 Tulip",
-            statement: "“Kẻ nói dối không phải là tôi, và cũng không ngồi ngay cạnh tôi trên vòng tròn!”",
+            seat: "1",
+            photo: "assets/flowers/rose.jpg",
+            focus: "50% 45%",
+            name: "Hoa Hồng",
+            neighbors: "Ngồi cạnh Oải Hương (5) và Tulip (2)",
+            statement: "“Kẻ nói dối không phải là tôi, và cũng không ngồi ngay cạnh tôi.”",
             isLiar: false,
-            wrongReason: "❌ Suy luận sai! Nếu #1 Hồng Đỏ nói dối thì cả #3 Hướng Dương và #4 Anh Đào đều phải nói thật — nhưng hai bông đó đang tố cáo trực tiếp nhau!"
+            wrongReason: "Chưa đúng. Nếu Hoa Hồng nói dối thì Hướng Dương và Anh Đào đều phải nói thật, nhưng hai bông này đang tố nhau."
           },
           {
             id: 1,
-            seat: "#2",
-            icon: "🌷",
-            name: "Tulip Hồng",
-            neighbors: "Kề #1 Hồng Đỏ & #3 Hướng Dương",
-            statement: "“Đúng một trong hai bông hoa ngồi sát cạnh tôi (#1 Hồng Đỏ hoặc #3 Hướng Dương) đang nói dối!”",
+            seat: "2",
+            photo: "assets/flowers/tulip.jpg",
+            focus: "50% 40%",
+            name: "Tulip",
+            neighbors: "Ngồi cạnh Hoa Hồng (1) và Hướng Dương (3)",
+            statement: "“Đúng một trong hai bông ngồi cạnh tôi (Hoa Hồng hoặc Hướng Dương) đang nói dối.”",
             isLiar: false,
-            wrongReason: "❌ Suy luận sai! Vì #3 Hướng Dương và #4 Anh Đào mâu thuẫn trực tiếp nhau nên kẻ nói dối phải thuộc 1 trong 2 bông đó, suy ra #2 Tulip đang nói thật!"
+            wrongReason: "Chưa đúng. Hướng Dương và Anh Đào tố nhau nên kẻ nói dối nằm trong hai bông đó, vậy Tulip đang nói thật."
           },
           {
             id: 2,
-            seat: "#3",
-            icon: "🌻",
+            seat: "3",
+            photo: "assets/flowers/sunflower.jpg",
+            focus: "50% 38%",
             name: "Hướng Dương",
-            neighbors: "Kề #2 Tulip & #4 Anh Đào",
-            statement: "“Chính bạn 🌸 Anh Đào (#4) ngồi ngay cạnh tôi mới là kẻ đang nói dối và giấu bó hoa!”",
+            neighbors: "Ngồi cạnh Tulip (2) và Anh Đào (4)",
+            statement: "“Anh Đào ngồi cạnh tôi mới là kẻ đang nói dối.”",
             isLiar: true,
-            solvedReason: "🎉 Phá án xuất sắc! #3 và #4 mâu thuẫn nhau nên #1, #2, #5 đều nói thật. Theo lời #1 và #2 thì #3 Hướng Dương chính là kẻ nói dối duy nhất!"
+            solvedReason: "Chính xác! Hướng Dương và Anh Đào tố nhau nên Hoa Hồng, Tulip, Oải Hương đều nói thật. Theo lời Tulip và Hoa Hồng thì Hướng Dương là kẻ nói dối."
           },
           {
             id: 3,
-            seat: "#4",
-            icon: "🌸",
+            seat: "4",
+            photo: "assets/flowers/cherry.jpg",
+            focus: "50% 22%",
             name: "Anh Đào",
-            neighbors: "Kề #3 Hướng Dương & #5 Oải Hương",
-            statement: "“🌻 Hướng Dương (#3) đang vu khống tôi! Kẻ nói dối thật sự đang ngồi ngay cạnh 🌷 Tulip Hồng (#2) cơ!”",
+            neighbors: "Ngồi cạnh Hướng Dương (3) và Oải Hương (5)",
+            statement: "“Hướng Dương đang vu khống tôi. Kẻ nói dối ngồi cạnh Tulip cơ.”",
             isLiar: false,
-            wrongReason: "❌ Gần đúng rồi! Nếu #4 Anh Đào nói dối thì #2 Tulip Hồng phải nói thật. Nhưng #2 khai rằng kẻ nói dối ngồi cạnh #2 (#1 hoặc #3) chứ không phải #4!"
+            wrongReason: "Chưa đúng. Nếu Anh Đào nói dối thì Tulip phải nói thật, nhưng Tulip khẳng định kẻ nói dối ngồi cạnh Tulip, không phải Anh Đào."
           },
           {
             id: 4,
-            seat: "#5",
-            icon: "🪻",
+            seat: "5",
+            photo: "assets/flowers/lavender.jpg",
+            focus: "30% 40%",
             name: "Oải Hương",
-            neighbors: "Kề #4 Anh Đào & #1 Hồng Đỏ",
-            statement: "“Tôi và 🌹 Hồng Đỏ (#1) ngồi cạnh tôi đều là những bông hoa trung thực 100%!”",
+            neighbors: "Ngồi cạnh Anh Đào (4) và Hoa Hồng (1)",
+            statement: "“Tôi và Hoa Hồng ngồi cạnh tôi đều trung thực.”",
             isLiar: false,
-            wrongReason: "❌ Suy luận sai! Giữa #3 Hướng Dương và #4 Anh Đào chắc chắn có 1 kẻ nói dối vì họ tố nhau, nên #5 Oải Hương không thể là kẻ nói dối!"
+            wrongReason: "Chưa đúng. Giữa Hướng Dương và Anh Đào chắc chắn có một kẻ nói dối vì họ tố nhau, nên Oải Hương không thể là kẻ nói dối."
           }
         ]
       },
@@ -246,7 +254,7 @@ Ich liebe dich über alles! ♥`,
     subtitle: "Không cần nhìn đồng hồ, chỉ cần em lên đồ thật xinh!",
     question: "Em đã sẵn sàng nhận Ủy Thác đi chơi tối nay cùng anh chưa?",
     acceptBtn: "Chốt kèo luôn! ♥",
-    declineBtn: "Ở nhà ngủ cơ 😴",
+    declineBtn: "Ở nhà ngủ cơ",
     finalToast: "Ủy thác hoàn tất! Tối nay anh qua đón công chúa đi ăn ngon và chụp photobooth nhé ♥"
   }
 };
