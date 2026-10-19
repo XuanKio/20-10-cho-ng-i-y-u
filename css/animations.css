@@ -1,0 +1,140 @@
+/* ==========================================================================
+   ANIMATIONS.CSS - HIỆU ỨNG CHUYỂN ĐỘNG GPU 120FPS TRÊN IPHONE 17 PRO
+   ========================================================================== */
+
+@keyframes stageFadeIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes vinylSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinning-vinyl {
+  animation: vinylSpin 7.5s linear infinite;
+  will-change: transform;
+}
+
+.spinning-vinyl.paused {
+  animation-play-state: paused;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), 0 0 0 0 rgba(240, 223, 190, 0.55);
+  }
+  50% {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 0 7px rgba(240, 223, 190, 0);
+  }
+}
+
+.glow-pulse {
+  animation: glowPulse 2.1s infinite;
+}
+
+@keyframes heartBounce {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-5px) scale(1.14); }
+}
+
+.heart-wiggle {
+  animation: heartBounce 0.55s infinite alternate;
+}
+
+@keyframes shakeCell {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px) rotate(-4deg); }
+  75% { transform: translateX(4px) rotate(4deg); }
+}
+
+.shake-cell {
+  animation: shakeCell 0.3s ease;
+}
+
+@keyframes popAnim {
+  0% { transform: scale(0.94); }
+  60% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.pop-anim {
+  animation: popAnim 0.3s ease;
+}
+
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+.canva-envelope-img {
+  animation: floatGentle 4s ease-in-out infinite;
+}
+
+@keyframes locketFloat {
+  0%, 100% { transform: rotate(-10deg) translateY(0px); }
+  50% { transform: rotate(-7deg) translateY(-5px); }
+}
+
+.locket-card-decoration {
+  animation: locketFloat 4s ease-in-out infinite;
+}
+
+@keyframes eqBounce {
+  0% { transform: scaleY(0.35); }
+  100% { transform: scaleY(1); }
+}
+
+@keyframes scWavePulse {
+  0% { transform: scaleY(0.75); }
+  100% { transform: scaleY(1.18); }
+}
+
+/* Hiệu ứng lật ảnh Locket mượt mà */
+@keyframes locketFlipNext {
+  0% {
+    opacity: 0.4;
+    transform: translate3d(0, 16px, 0) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes locketFlipPrev {
+  0% {
+    opacity: 0.4;
+    transform: translate3d(0, -16px, 0) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.flip-anim-next {
+  animation: locketFlipNext 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.flip-anim-prev {
+  animation: locketFlipPrev 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes locketEmojiFly {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(0.7);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, -170px, 0) scale(1.35);
+  }
+}

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#6d0815" />
+  <title>Für meine Liebste ♥ Happy Early 20/10</title>
+
+  <!-- BỘ FONT HỖ TRỢ ĐẦY ĐỦ 100% DẤU TIẾNG VIỆT & TIẾNG ĐỨC (KHÔNG LỖI FONT) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+</head>
+<body>
+  <!-- NỀN 3D WEBGL THREE.JS KẾT HỢP ĐỒ HỌA 2D CANVAS -->
+  <div id="threeCanvasContainer" aria-hidden="true"></div>
+
+  <!-- LỚP PHỦ TEXTURE GIẤY VINTAGE MỊN -->
+  <div class="paper-grain-overlay" aria-hidden="true"></div>
+
+  <!-- DYNAMIC ISLAND IPHONE 17 PRO MUSIC PLAYER (GỌN ĐẸP TRÊN CÙNG) -->
+  <header class="dynamic-island-hud" id="dynamicIslandHud">
+    <button id="musicToggleBtn" class="di-vinyl-btn" aria-label="Bật/Tắt nhạc SEVENTEEN">
+      <img src="assets/canva/MAG6KrmbpeQ.png" alt="" class="spinning-vinyl paused" />
+    </button>
+    <div class="di-track-info" id="diTrackArea">
+      <span id="currentSongLabel" class="di-song-title">SEVENTEEN - Darl+ing</span>
+    </div>
+    <div class="di-equalizer" id="diEqualizer" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <button id="musicNextBtn" class="di-next-btn" title="Đổi bài ngẫu nhiên" aria-label="Bài tiếp theo">⏭</button>
+  </header>
+
+  <!-- KHUNG CHÍNH TỐI ƯU CHO IPHONE 17 PRO (402x874, 100dvh, safe-area) -->
+  <main class="app-viewport">
+
+    <!-- =================================================================
+         CHẶNG 1: SOUNDCLOUD VINYL PLAYER -> ĐỐT PHONG ẤN PYRO -> MỞ PHONG BÌ
+         ================================================================= -->
+    <section id="stage1" class="stage-screen active">
+
+      <!-- Màn 1A: Trình Phát Nhạc SoundCloud Waveform + Mâm Đĩa Than SEVENTEEN -->
+      <div id="s1SubTurntable" class="s1-subscreen active">
+        <div class="quest-focus-card">
+          <span class="quest-pill-badge">✦ NHIỆM VỤ MỞ ĐẦU</span>
+          <p class="quest-main-text">Chạm chọn (hoặc kéo) 1 đĩa nhạc của <strong>SEVENTEEN</strong> lắp vào máy phát để bắt đầu!</p>
+        </div>
+
+        <!-- SOUNDCLOUD x VINYL HERO PLAYER CARD -->
+        <div class="sc-hero-player-card" id="turntableDropZone">
+          <div class="sc-hero-top">
+            <!-- Mâm đĩa than kèm ảnh bìa đôi -->
+            <div class="sc-vinyl-deck">
+              <img src="assets/images/photo_helmet.jpg" alt="" class="sc-album-cover" draggable="false" />
+              <div class="turntable-platter">
+                <img id="platterInsertedDisc" src="assets/canva/MAG6KrmbpeQ.png" alt="" class="platter-disc loaded spinning-vinyl paused" draggable="false" />
+                <div class="platter-center-pin"></div>
+              </div>
+              <div id="turntableTonearm" class="turntable-tonearm"></div>
+            </div>
+
+            <!-- Thông tin bài hát & Nút Play kiểu SoundCloud -->
+            <div class="sc-track-header">
+              <div class="sc-title-row">
+                <button id="scHeroPlayBtn" class="sc-play-circle-btn" aria-label="Phát nhạc">▶</button>
+                <div class="sc-title-meta">
+                  <span class="sc-artist-tag">SEVENTEEN • 20/10 MIX</span>
+                  <h2 id="scActiveTitle" class="sc-active-title">Darl+ing</h2>
+                  <span id="scActiveVibe" class="sc-active-vibe">Chạm chọn 1 bài bên dưới để phát</span>
+                </div>
+              </div>
+
+              <!-- Sóng nhạc SoundCloud 36 cột nhảy theo nhạc -->
+              <div id="scWaveformBars" class="sc-waveform-bars" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <p id="turntableStatusText" class="sc-status-pill">
+            ♫ Hãy chạm chọn 1 bản tình ca bên dưới (Hết bài tự phát Random)
+          </p>
+        </div>
+
+        <!-- Danh sách 7 bài hát kiểu SoundCloud Tracklist -->
+        <div id="vinylDiscRack" class="sc-tracklist"></div>
+
+        <div class="turntable-actions-row">
+          <button id="turntableRandomBtn" class="secondary-pill-btn">🔀 Phát Ngẫu Nhiên</button>
+          <button id="turntableContinueBtn" class="canva-pill-btn glow-pulse hidden">
+            🔥 Tiếp tục: Phá Phong Ấn Hỏa →
+          </button>
+        </div>
+      </div>
+
+      <!-- Màn 1B: Đốt cháy Phong Ấn Pyro (Genshin Impact) & Mở Dấu Sáp Chạy Trốn -->
+      <div id="s1SubCover" class="s1-subscreen">
+        <div class="quest-focus-card" id="pyroQuestBanner">
+          <span class="quest-pill-badge">🔥 PHONG ẤN NGUYÊN TỐ HỎA</span>
+          <p class="quest-main-text" id="pyroProgressText">Chạm &amp; xoa ngón tay lên phong ấn để đốt cháy lớp giấy cổ!</p>
+        </div>
+
+        <div class="canva-heading-block compact">
+          <h2 class="script-main-title" id="s1GermanTitle">Für meine Liebste</h2>
+          <p class="serif-subtitle" id="s1GermanSub">Ich hab da was ganz Besonderes für dich...</p>
+        </div>
+
+        <div class="canva-envelope-stage" id="s1EnvelopeArea">
+          <div id="sealTrollBubble" class="troll-speech-bubble hidden">
+            Khoan đã! Hôm nay mới mở quà 20/10 sớm mà vội thế à? 😝
+          </div>
+
+          <div class="envelope-wrapper" id="pyroEnvelopeWrap">
+            <img src="assets/canva/MAFqx8TGVCU.png" alt="Envelope" class="canva-envelope-img" draggable="false" />
+            <button id="runawayWaxSeal" class="wax-seal-btn" aria-label="Mở dấu sáp niêm phong">
+              <img src="assets/canva/wax_seal_clean.png?v=3" alt="Wax Seal" draggable="false" />
+            </button>
+
+            <!-- LỚP GIẤY NIÊM PHONG CỔ ĐỐT CHÁY BẰNG NGÓN TAY (PYRO 2D CANVAS) -->
+            <div id="pyroSealOverlay" class="pyro-seal-overlay">
+              <canvas id="pyroBurnCanvas"></canvas>
+              <canvas id="pyroBurnCanvasFx" class="pyro-fx-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Màn 1C: Kiểm tra biểu cảm trước khi mở (Canva Page 1) -->
+      <div id="s1SubReaction" class="s1-subscreen">
+        <div class="envelope-mini-preview">
+          <img src="assets/canva/MAFqx8TGVCU.png" alt="" class="canva-envelope-img" draggable="false" />
+          <img src="assets/canva/wax_seal_clean.png?v=3" alt="" class="wax-seal-static" draggable="false" />
+        </div>
+
+        <h2 class="cooper-dialog-title">
+          Don’t open it yet.<br />
+          <em>Let me see your reaction first!</em>
+        </h2>
+        <p class="viet-sub-hint">(Chọn đúng biểu cảm đáng yêu nhất để kích hoạt Phản Ứng Nguyên Tố mở khóa nhé)</p>
+
+        <div class="canva-emoji-row">
+          <button class="emoji-choice-btn" data-reaction="wrong1" aria-label="Ngơ ngác">
+            <img src="assets/canva/MAHEki9_Y-Y.png" alt="?" draggable="false" />
+          </button>
+          <button class="emoji-choice-btn" data-reaction="wrong2" aria-label="Bất ngờ">
+            <img src="assets/canva/MAHEkmMKPJI.png" alt=":O" draggable="false" />
+          </button>
+          <button class="emoji-choice-btn" data-reaction="correct" aria-label="Hôn gió thả tim">
+            <img src="assets/canva/MAHEma3uKjg.png" alt="Love" draggable="false" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Màn 1D: Chọn sai biểu cảm - Bị Troll -->
+      <div id="s1SubWrong" class="s1-subscreen">
+        <div class="wrong-reaction-collage">
+          <img src="assets/canva/MAHEmk7ZvrY.png" alt="" class="red-env-card-img" draggable="false" />
+          <img src="assets/canva/MAHEki9_Y-Y.png" alt="" class="floating-wrong-emoji left" draggable="false" />
+          <img src="assets/canva/MAHEkmMKPJI.png" alt="" class="floating-wrong-emoji right" draggable="false" />
+        </div>
+
+        <h2 class="cooper-dialog-title">Ơ kìa, sao lại làm mặt đấy? 🤨</h2>
+        <p class="viet-sub-hint">
+          Nhận quà 20/10 sớm mà mặt căng thế!<br />
+          Phải chọn biểu cảm yêu thương mới mở được nha!
+        </p>
+
+        <button id="s1TryAgainBtn" class="canva-pill-btn">Thử lại ngay ↺</button>
+      </div>
+
+      <!-- Màn 1E: Chọn đúng biểu cảm - Mở khóa thiệp -->
+      <div id="s1SubUnlocked" class="s1-subscreen">
+        <div class="unlocked-envelope-collage">
+          <img src="assets/canva/MAFqx8TGVCU.png" alt="" class="canva-envelope-img" draggable="false" />
+          <img src="assets/canva/MAHEma3uKjg.png" alt="" class="unlocked-love-emoji" draggable="false" />
+        </div>
+
+        <h2 class="cooper-dialog-title">
+          Open it and find out.<br />
+          <em>It's all for you!</em>
+        </h2>
+        <p class="german-sub-line">Alles Liebe zum Frauentag im Voraus ♥</p>
+
+        <button id="s1OpenCardBtn" class="canva-pill-btn glow-pulse">
+          Mở Thiệp Handmade 20/10 →
+        </button>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         CHẶNG 2: THIỆP HANDMADE 3 KHÚC + ĐUỔI BẮT TIÊN LINH + LOCKET THÁNG 10
+         ================================================================= -->
+    <section id="stage2" class="stage-screen">
+      <!-- Bảng Nhiệm Vụ Giải Đố đặt chính giữa phía trên thiệp, rõ nét dễ nhìn -->
+      <div class="quest-focus-card" id="calPuzzleBannerWrap">
+        <span class="quest-pill-badge">✦ TRUY TÌM TIÊN LINH TRÁI TIM</span>
+        <p class="quest-main-text" id="calPuzzleStatus">Hãy chạm vào Trái Tim Đỏ ngày 20/10 trên tờ lịch để bắt đầu!</p>
+      </div>
+
+      <div class="trifold-card-wrapper" id="trifoldCard" data-active-wing="left">
+        <!-- CÁNH TRÁI: LỊCH OCTOBER & PHONG BÌ LONDON AIR MAIL -->
+        <article class="card-wing wing-left">
+          <div class="kraft-panel-inner">
+            <div class="handmade-calendar-sheet">
+              <img src="assets/canva/MAG7xwkX8Xg.png" alt="" class="canva-pushpin" draggable="false" />
+              <h3 class="calendar-Title">October</h3>
+              <div class="calendar-weekdays">
+                <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+              </div>
+              <div id="octoberCalendarGrid" class="calendar-days-grid"></div>
+            </div>
+
+            <div id="airmailEnvelope" class="airmail-envelope">
+              <div class="airmail-border">
+                <div class="airmail-top-row">
+                  <span class="airmail-tag">PAR AVION • AIR MAIL</span>
+                  <div class="postmark-stamp">LONDON<br/>20 OCT</div>
+                </div>
+                <p class="airmail-title">Handmade With Love</p>
+                <p class="airmail-tap-hint">(Chạm để mở phong bì nhỏ)</p>
+                <div class="runaway-heart-badge">♥</div>
+              </div>
+              <div class="airmail-secret-card">
+                <p id="airmailSecretText">
+                  Für meine süße Freundin ♥<br />
+                  Chúc cô gái của anh một mùa 20/10 sớm thật hạnh phúc!
+                </p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- CÁNH GIỮA: TÂM THƯ VIẾT TAY & HOA KHÔ VINTAGE -->
+        <article class="card-wing wing-center">
+          <div class="kraft-panel-inner dark-frame">
+            <div class="vintage-letter-paper">
+              <div class="torn-dict-header">
+                <span class="for-you-script">For You</span>
+                <span class="wax-mini-badge">BEST WISHES</span>
+              </div>
+
+              <div class="handwritten-body" id="handwrittenLetterText"></div>
+
+              <div class="letter-footer-row">
+                <div class="dried-flower-deco">🌿✨</div>
+                <div class="handwritten-signature" id="handwrittenSignText">Dein Xuân ♥</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- CÁNH PHẢI: COSPLAY CHẾ ĐỘ XEM KỶ NIỆM THÁNG CỦA LOCKET -->
+        <article class="card-wing wing-right">
+          <div class="kraft-panel-inner">
+            <div id="stage2LocketContainer" class="locket-host-wrapper"></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="stage-footer-bar">
+        <button id="stage2StepBtn" class="canva-pill-btn">
+          Đọc Tâm Thư Viết Tay →
+        </button>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         CHẶNG 3: MINIGAME NỐI CHÒM SAO GENSHIN -> THIỆP REN & CÂU ĐỐ TROLL
+         ================================================================= -->
+    <section id="stage3" class="stage-screen">
+
+      <!-- Bước 3A: Minigame Nối Chòm Sao Định Mệnh (Genshin Impact Astrolabe) -->
+      <div id="s3SubConstellation" class="s3-subscreen active">
+        <div class="quest-focus-card">
+          <span class="quest-pill-badge">✦ GIẢI ĐỐ CHÒM SAO ĐỊNH MỆNH</span>
+          <h2 class="cooper-dialog-title">Chòm Sao Trái Tim</h2>
+          <p id="constellationStatusText" class="quest-main-text">
+            Chạm lần lượt vào các ngôi sao phát sáng (1 → 6) để vẽ Chòm Sao mở khóa thiệp!
+          </p>
+        </div>
+
+        <div class="constellation-board-wrap">
+          <canvas id="constellationCanvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Bước 3B: Hiện Thiệp Ren Canva (Đã tách nền & xoay ngang chuẩn) & Câu Hỏi Mật Khẩu Troll -->
+      <div id="s3SubCardQuiz" class="s3-subscreen">
+        <div class="canva-lace-card-container">
+          <img src="assets/canva/lace_card.png?v=4" alt="" class="lace-card-bg" draggable="false" />
+          <img src="assets/canva/MAG9ocg6GkU.png" alt="" class="crayon-star star-tl" draggable="false" />
+          <img src="assets/canva/MAG9ocg6GkU.png" alt="" class="crayon-star star-br" draggable="false" />
+
+          <div class="lace-card-content">
+            <div class="lace-photo-frame">
+              <img src="assets/images/photo_glasses_cute.jpg" alt="" draggable="false" />
+            </div>
+            <div class="lace-text-side">
+              <h2 class="pinyon-card-title">Happy<br /><span>20/10</span></h2>
+              <p class="lace-card-date">20 . 10 . 2026</p>
+              <p class="lace-card-german">Für mein Mädchen ♥</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="troll-quiz-card">
+          <p class="quiz-badge">🔒 CÂU ĐỐ MẬT KHẨU</p>
+          <h3 class="quiz-question" id="trollQuizQuestion">
+            Ai là người chiều chuộng và thương em nhất trên đời?
+          </h3>
+
+          <div class="quiz-options-wrap" id="quizOptionsArena">
+            <button id="trollCorrectBtn" class="canva-pill-btn quiz-btn-correct">
+              Chắc chắn là anh Xuân rồi ♥
+            </button>
+            <button id="trollWrongBtn" class="canva-pill-btn quiz-btn-troll">
+              Hông biết đâu 😝
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         CHẶNG 4: "CHOOSE ONE" - 3 ẤN KÝ GIẢI ĐỐ CĂNG ĐÒN (PHẢI GIẢI XONG MỚI MỞ TIẾP)
+         ================================================================= -->
+    <section id="stage4" class="stage-screen">
+      <!-- Sảnh chính: 3 Trái tim ren trắng mở theo thứ tự 01 -> 02 -> 03 -->
+      <div id="stage4Hub" class="s4-hub-view active">
+        <div class="quest-focus-card">
+          <span class="quest-pill-badge">✦ THỬ THÁCH 3 ẤN KÝ KÝ ỨC</span>
+          <h2 class="choose-one-title">
+            <span class="pinyon-cap">C</span>hoose <em>one</em>
+          </h2>
+          <p class="quest-main-text" id="s4ProgressText">
+            Giải đố lần lượt từng trái tim (01 → 02 → 03) để mở khóa lịch trình tối nay! (Đã giải: 0/3)
+          </p>
+        </div>
+
+        <div class="three-lace-hearts-arena">
+          <button class="lace-heart-item pos-1" id="laceHeartBtn1" data-room="1" aria-label="Ấn ký 1">
+            <img src="assets/canva/MAG5_qBDquY.png" alt="" draggable="false" />
+            <span class="heart-num-label">01</span>
+            <span class="room-check-badge">✓</span>
+          </button>
+
+          <button class="lace-heart-item pos-2 locked-heart" id="laceHeartBtn2" data-room="2" aria-label="Ấn ký 2">
+            <img src="assets/canva/MAG5_qBDquY.png" alt="" draggable="false" />
+            <span class="heart-num-label">🔒 02</span>
+            <span class="room-check-badge">✓</span>
+          </button>
+
+          <button class="lace-heart-item pos-3 locked-heart" id="laceHeartBtn3" data-room="3" aria-label="Ấn ký 3">
+            <img src="assets/canva/MAG5_qBDquY.png" alt="" draggable="false" />
+            <span class="heart-num-label">🔒 03</span>
+            <span class="room-check-badge">✓</span>
+          </button>
+        </div>
+
+        <div class="s4-bottom-action">
+          <button id="toStage5Btn" class="canva-pill-btn glow-pulse hidden">
+            🎁 Đã giải đủ 3 Ấn Ký! Mở Lịch Trình Tối Nay →
+          </button>
+        </div>
+      </div>
+
+      <!-- ===============================================================
+           PHÒNG 1: PUZZLE ĐÈN HOA SEN INAZUMA (LIGHTS OUT) -> BÓ HOA HỒNG
+           =============================================================== -->
+      <div id="scrapbookRoom1" class="s4-room-modal">
+        <!-- Màn Giải Đố Phòng 1 -->
+        <div id="room1PuzzleView" class="room-puzzle-box">
+          <div class="quest-focus-card">
+            <span class="quest-pill-badge">🧩 ẤN KÝ 01 • CƠ QUAN ĐÈN INAZUMA</span>
+            <p class="quest-main-text" id="r1PuzzleHint">
+              Quy tắc: Chạm vào 1 đèn sẽ <strong>đảo trạng thái (Bật/Tắt) của chính nó và 2 đèn sát cạnh</strong>. Hãy làm cả 5 đèn cùng sáng!
+            </p>
+          </div>
+
+          <div class="inazuma-lanterns-board" id="inazumaLanternsBoard"></div>
+
+          <div class="puzzle-controls-row">
+            <button id="r1ResetBtn" class="secondary-pill-btn">↺ Đặt lại đèn</button>
+            <button class="secondary-pill-btn back-to-hub-btn" data-close-room="1">← Quay lại</button>
+          </div>
+        </div>
+
+        <!-- Phần thưởng Phòng 1 sau khi giải đố xong: Bó Hoa Hồng & Lời Yêu -->
+        <div id="room1RewardView" class="room-reward-box hidden">
+          <div class="quest-focus-card compact-card">
+            <span class="quest-pill-badge">🌸 ĐÃ MỞ KHÓA ẤN KÝ 01</span>
+            <p class="quest-main-text">Bó hoa hồng &amp; lời yêu đa ngôn ngữ dành tặng em ♥</p>
+          </div>
+
+          <div class="bouquet-collage-stage">
+            <div id="multilingualLoveContainer" class="multilingual-quotes-layer"></div>
+            <img src="assets/canva/MAE4-QOGV9g.png" alt="" class="soft-blur-heart h1" draggable="false" />
+            <img src="assets/canva/MAE4-QOGV9g.png" alt="" class="soft-blur-heart h2" draggable="false" />
+
+            <div class="canva-bouquet-wrap">
+              <img src="assets/canva/MAHFKbumCXY.png" alt="" class="bouquet-paper-img" draggable="false" />
+              <img src="assets/canva/MAG9USfKgww.png" alt="" class="bouquet-roses-img" draggable="false" />
+
+              <div class="bouquet-photo bp-1">
+                <img src="assets/images/photo_heart_hands.jpg" alt="" draggable="false" />
+              </div>
+              <div class="bouquet-photo bp-2">
+                <img src="assets/images/photo_pinching_cheek.jpg" alt="" draggable="false" />
+              </div>
+              <div class="bouquet-photo bp-3">
+                <img src="assets/images/photo_pillow.jpg" alt="" draggable="false" />
+              </div>
+            </div>
+          </div>
+
+          <div class="room-bottom-bar">
+            <button class="canva-pill-btn back-to-hub-btn" data-close-room="1">Hoàn thành Ấn Ký 01 → Mở Ấn Ký 02</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===============================================================
+           PHÒNG 2: PUZZLE GHÉP MẢNH KÝ ỨC 3x3 -> LOCKET KỶ NIỆM THÁNG 10
+           =============================================================== -->
+      <div id="scrapbookRoom2" class="s4-room-modal">
+        <!-- Màn Giải Đố Phòng 2 -->
+        <div id="room2PuzzleView" class="room-puzzle-box">
+          <div class="quest-focus-card">
+            <span class="quest-pill-badge">🧩 ẤN KÝ 02 • VUỐT GHÉP TRANH KÝ ỨC</span>
+            <p class="quest-main-text" id="r2PuzzleHint">
+              <strong>Vuốt ô ảnh (Lên, Xuống, Trái, Phải)</strong> để trượt đổi chỗ với ô liền kề sao cho bức ảnh đôi khớp hoàn chỉnh!
+            </p>
+          </div>
+
+          <div class="tile-puzzle-header">
+            <div class="tile-preview-box">
+              <img id="tilePuzzlePreviewImg" src="assets/images/photo_eating.jpg" alt="Ảnh mẫu" draggable="false" />
+              <span>Ảnh mẫu 1:1</span>
+            </div>
+            <div class="tile-progress-pill" id="tilePuzzleProgress">Đúng vị trí: 3 / 9 ô</div>
+          </div>
+
+          <div id="photoTilePuzzleBoard" class="photo-tile-board"></div>
+
+          <div class="puzzle-controls-row">
+            <button id="r2ResetBtn" class="secondary-pill-btn">↺ Xếp lại từ đầu</button>
+            <button class="secondary-pill-btn back-to-hub-btn" data-close-room="2">← Quay lại</button>
+          </div>
+        </div>
+
+        <!-- Phần thưởng Phòng 2 sau khi ghép xong: Locket Kỷ Niệm Tháng 10 -->
+        <div id="room2RewardView" class="room-reward-box hidden">
+          <div class="quest-focus-card compact-card">
+            <span class="quest-pill-badge">📸 ĐÃ MỞ KHÓA ẤN KÝ 02 • LOCKET RECAP</span>
+            <p class="quest-main-text">Lật xem ảnh hoặc bấm <strong>📅 Tháng 10</strong> để xem lịch kỷ niệm tháng nhé!</p>
+          </div>
+
+          <div id="room2LocketContainer" class="room2-locket-host"></div>
+
+          <div class="room-bottom-bar">
+            <button class="canva-pill-btn back-to-hub-btn" data-close-room="2">Hoàn thành Ấn Ký 02 → Mở Ấn Ký 03</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===============================================================
+           PHÒNG 3: PUZZLE XOAY 3 VÒNG LA BÀN CƠ HỌC -> TÂM THƯ & DÂY CHUYỀN
+           =============================================================== -->
+      <div id="scrapbookRoom3" class="s4-room-modal">
+        <!-- Màn Giải Đố Phòng 3 -->
+        <div id="room3PuzzleView" class="room-puzzle-box">
+          <div class="quest-focus-card">
+            <span class="quest-pill-badge">🧩 ẤN KÝ 03 • LA BÀN CỔ HỌC FONTAINE</span>
+            <p class="quest-main-text" id="r3PuzzleHint">
+              Mỗi nút sẽ xoay <strong>cùng lúc 2 vòng tròn liên kết</strong>. Hãy căn chỉnh để cả 3 viên ngọc Trái Tim (♥) cùng thẳng hàng ở đỉnh <strong>▲ 12 giờ</strong>!
+            </p>
+          </div>
+
+          <div class="compass-rings-wrap">
+            <canvas id="compassRingsCanvas" width="260" height="260"></canvas>
+          </div>
+
+          <div class="compass-btns-row">
+            <button class="canva-pill-btn compass-rot-btn" data-pair="AB">Xoay Vòng 1 + 2</button>
+            <button class="canva-pill-btn compass-rot-btn" data-pair="BC">Xoay Vòng 2 + 3</button>
+            <button class="canva-pill-btn compass-rot-btn" data-pair="AC">Xoay Vòng 1 + 3</button>
+          </div>
+
+          <div class="puzzle-controls-row">
+            <button id="r3ResetBtn" class="secondary-pill-btn">↺ Đặt lại La Bàn</button>
+            <button class="secondary-pill-btn back-to-hub-btn" data-close-room="3">← Quay lại</button>
+          </div>
+        </div>
+
+        <!-- Phần thưởng Phòng 3: Thiệp Thư Giữa Màn Hình & Vòng Cổ Trái Tim Trang Trí Trên Thiệp -->
+        <div id="room3RewardView" class="room-reward-box hidden">
+          <div class="postage-letter-stage">
+            <div class="postage-paper-card">
+              <img src="assets/canva/MAGUlWQ-DxU.png" alt="" class="canva-paperclip" draggable="false" />
+              <div id="room3LetterBody" class="faustina-letter-text"></div>
+              <div id="room3LetterSign" class="pinyon-letter-sign">Xuân ♥</div>
+
+              <!-- Vòng cổ trái tim bạc lồng ảnh 2 đứa trang trí trực tiếp ngay trên góc thiệp -->
+              <img src="assets/canva/heart_locket_couple.png?v=3" alt="Couple Heart Locket" class="locket-card-deco" draggable="false" />
+            </div>
+          </div>
+
+          <div class="room-bottom-bar">
+            <button class="canva-pill-btn back-to-hub-btn glow-pulse" data-close-room="3">
+              Hoàn tất 3 Ấn Ký! Ra mở Lịch Trình Tối Nay →
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         CHẶNG 5: ỦY THÁC HẸN HÒ TỐI NAY (ĐI ĂN & CHỤP PHOTOBOOTH)
+         ================================================================= -->
+    <section id="stage5" class="stage-screen">
+      <div class="tonight-ticket-card">
+        <div class="ticket-notch notch-left"></div>
+        <div class="ticket-notch notch-right"></div>
+
+        <div class="ticket-header">
+          <span class="ticket-badge" id="s5HeaderLabel">✦ DAILY COMMISSION • 20/10 EARLY PASS ✦</span>
+          <p class="ticket-german" id="s5GermanGreeting">Ein kleiner Plan für heute Abend ♥</p>
+          <h2 class="ticket-main-title" id="s5Title">Ủy Thác Tối Nay Của Đôi Ta</h2>
+          <p class="ticket-subtitle" id="s5Subtitle">
+            Không cần nhìn đồng hồ, chỉ cần em lên đồ thật xinh!
+          </p>
+        </div>
+
+        <div class="ticket-divider"></div>
+
+        <div class="date-itinerary-list">
+          <div class="itinerary-item">
+            <div class="itinerary-thumb">
+              <img src="assets/images/photo_eating.jpg" alt="" draggable="false" />
+            </div>
+            <div class="itinerary-info">
+              <span class="stop-pill">NHIỆM VỤ 01 • TỐI NAY</span>
+              <h3>🍽️ Đi Ăn Ngon Cùng Nhau</h3>
+              <p>Đi thưởng thức món ngon hai đứa thích, nạp đầy năng lượng cho buổi tối.</p>
+            </div>
+          </div>
+
+          <div class="itinerary-item">
+            <div class="itinerary-thumb">
+              <img src="assets/images/photo_cat_booth.jpg" alt="" draggable="false" />
+            </div>
+            <div class="itinerary-info">
+              <span class="stop-pill">NHIỆM VỤ 02 • TIẾP THEO</span>
+              <h3>📸 Đi Chụp Photobooth</h3>
+              <p>Chui vào buồng chụp tạo đủ kiểu dáng nhắng nhít rinh ảnh về làm kỷ niệm.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="ticket-divider"></div>
+
+        <div class="ticket-confirm-area" id="ticketConfirmArena">
+          <p class="confirm-prompt" id="s5Question">
+            Em đã sẵn sàng nhận Ủy Thác đi chơi tối nay cùng anh chưa?
+          </p>
+
+          <div class="confirm-buttons-row">
+            <button id="acceptDateBtn" class="canva-pill-btn accept-btn glow-pulse">
+              Chốt kèo luôn! ♥
+            </button>
+            <button id="declineDateBtn" class="canva-pill-btn decline-runaway-btn">
+              Ở nhà ngủ cơ 😴
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL PHÁO HOA TIM CHỐT KÈO THÀNH CÔNG -->
+  <div id="finalCelebrationModal" class="celebration-modal hidden">
+    <div class="celebration-card">
+      <img src="assets/canva/MAHEma3uKjg.png" alt="" class="celeb-emoji" draggable="false" />
+      <h2 class="script-main-title">Ich liebe dich! ♥</h2>
+      <p class="celeb-message" id="finalToastText">
+        Ủy thác hoàn tất! Tối nay anh qua đón công chúa đi ăn ngon và chụp photobooth nhé ♥
+      </p>
+      <div class="celeb-photo-pair">
+        <img src="assets/images/photo_flight_booth.jpg" alt="" draggable="false" />
+        <img src="assets/images/photo_helmet.jpg" alt="" draggable="false" />
+      </div>
+      <button id="closeCelebrationBtn" class="canva-pill-btn">Xem lại thiệp kỷ niệm ↺</button>
+    </div>
+  </div>
+
+  <!-- SCRIPTS: THREE.JS + CÁC MODULE THEO NGUYÊN TẮC SOLID -->
+  <script src="js/vendor/three.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/threeScene.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/genshinPuzzles.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/waterfallCard.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
